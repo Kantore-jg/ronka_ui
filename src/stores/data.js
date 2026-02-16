@@ -13,6 +13,13 @@ export const useDataStore = defineStore('data', () => {
   const events = ref([])
   const eventAssignments = ref([])
   const eventComments = ref([])
+  const gallery = ref([
+    { id: 1, type: 'image', url: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800', title: 'Mariage élégant' },
+    { id: 2, type: 'image', url: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=800', title: 'Réception événementielle' },
+    { id: 3, type: 'image', url: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800', title: 'Fête privée' },
+    { id: 4, type: 'image', url: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800', title: 'Service traiteur' },
+    { id: 5, type: 'image', url: 'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=800', title: 'Conférence' },
+  ])
   
   function addBooking(booking) {
     bookings.value.push({ ...booking, id: Date.now(), createdAt: new Date().toISOString() })
@@ -60,10 +67,19 @@ export const useDataStore = defineStore('data', () => {
     if (partner) partner.status = 'approved'
   }
   
+  function addGalleryItem(item) {
+    gallery.value.push({ ...item, id: Date.now(), type: item.type || 'image' })
+  }
+  
+  function removeGalleryItem(id) {
+    gallery.value = gallery.value.filter(g => g.id !== id)
+  }
+  
   return {
     bookings, donations, partners, feedbacks, suggestions, members, events,
-    eventAssignments, eventComments,
+    eventAssignments, eventComments, gallery,
     addBooking, addDonation, addPartner, addFeedback, addSuggestion,
-    addMember, removeMember, addEvent, assignMemberToEvent, addEventComment, approvePartner
+    addMember, removeMember, addEvent, assignMemberToEvent, addEventComment, approvePartner,
+    addGalleryItem, removeGalleryItem
   }
 })

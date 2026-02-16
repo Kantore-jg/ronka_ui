@@ -1,4 +1,31 @@
 <script setup>
+import { ref, onMounted, onUnmounted } from 'vue'
+import { useDataStore } from '@/stores/data'
+
+const dataStore = useDataStore()
+const currentIndex = ref(0)
+let intervalId = null
+
+const galleryItems = dataStore.gallery.filter(g => g.type === 'image' || g.type === 'video')
+
+function nextSlide() {
+  if (!galleryItems.length) return
+  currentIndex.value = (currentIndex.value + 1) % galleryItems.length
+}
+
+function goToSlide(i) {
+  currentIndex.value = i
+}
+
+onMounted(() => {
+  if (galleryItems.length) {
+    intervalId = setInterval(nextSlide, 2000)
+  }
+})
+
+onUnmounted(() => {
+  if (intervalId) clearInterval(intervalId)
+})
 </script>
 
 <template>
@@ -25,6 +52,38 @@
           Nous accompagnons vos cérémonies, vos événements et vos fêtes avec professionnalisme et passion, 
           en mettant à votre disposition des serveurs qualifiés et une organisation irréprochable.
         </p>
+      </div>
+    </section>
+
+    <section v-if="galleryItems.length" class="gallery-preview">
+      <div class="container">
+        <h2>Nos événements en images</h2>
+        <div class="carousel-wrap">
+          <div class="carousel-track" :style="{ transform: `translateX(-${currentIndex * 100}%)` }">
+            <div v-for="(item, i) in galleryItems" :key="item.id" class="carousel-slide">
+              <div v-if="item.type === 'image'" class="slide-media">
+                <img :src="item.url" :alt="item.title" @error="$event.target.src='/logo.png'">
+              </div>
+              <div v-else class="slide-media">
+                <video :src="item.url" muted loop autoplay playsinline></video>
+              </div>
+              <p v-if="item.title" class="slide-caption">{{ item.title }}</p>
+            </div>
+          </div>
+          <div v-if="galleryItems.length > 1" class="carousel-dots">
+            <button
+              v-for="(_, i) in galleryItems"
+              :key="i"
+              class="dot"
+              :class="{ active: i === currentIndex }"
+              @click="goToSlide(i)"
+              :aria-label="`Image ${i + 1}`"
+            ></button>
+          </div>
+        </div>
+        <router-link to="/galerie" class="btn btn-outline gallery-link">
+          <i class="pi pi-images"></i> Voir plus d'images
+        </router-link>
       </div>
     </section>
 
@@ -191,6 +250,88 @@
   color: var(--text-secondary);
   line-height: 1.7;
 }
+
+.gallery-preview {
+  padding: 4rem 0;
+  background: var(--bg-primary);
+}
+
+.gallery-preview h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 2rem;
+  color: var(--accent);
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.carousel-wrap {
+  position: relative;
+  max-width: 800px;
+  margin: 0 auto 2rem;
+  overflow: hidden;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+}
+
+.carousel-track {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+}
+
+.carousel-slide {
+  min-width: 100%;
+  flex-shrink: 0;
+}
+
+.slide-media {
+  aspect-ratio: 16/10;
+  overflow: hidden;
+  background: var(--input-bg);
+}
+
+.slide-media img,
+.slide-media video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.slide-caption {
+  padding: 1rem;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid var(--accent);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dot.active {
+  background: var(--accent);
+}
+
+.gallery-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 auto;
+}
+
+.gallery-link i { font-size: 1.1rem; }
 
 .quick-services { padding: 5rem 0; }
 

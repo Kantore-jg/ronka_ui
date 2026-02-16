@@ -15,6 +15,7 @@ const sidebarLinks = computed(() => {
       { name: 'Membres', to: '/admin/members', icon: 'pi-users' },
       { name: 'Événements', to: '/admin/events', icon: 'pi-calendar' },
       { name: 'Réservations', to: '/admin/bookings', icon: 'pi-list' },
+      { name: 'Galerie', to: '/admin/galerie', icon: 'pi-images' },
     ]
   }
   if (authStore.isMember) {

@@ -11,6 +11,7 @@ const mobileMenuOpen = ref(false)
 const navLinks = computed(() => [
   { name: 'Accueil', to: '/' },
   { name: 'Services', to: '/services' },
+  { name: 'Galerie', to: '/galerie' },
   { name: 'Réserver', to: '/booking' },
   { name: 'Don', to: '/donate' },
   { name: 'Partenaires', to: '/partenaires' },
@@ -79,6 +80,7 @@ function getDashboardLink() {
           <router-link to="/booking">Réserver</router-link>
           <router-link to="/donate">Don</router-link>
           <router-link to="/partenaires">Partenaires</router-link>
+          <router-link to="/galerie">Galerie</router-link>
           <router-link to="/feedback">Feedback</router-link>
         </div>
         <div class="footer-social">

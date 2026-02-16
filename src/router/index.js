@@ -17,6 +17,7 @@ const router = createRouter({
         { path: 'donate', name: 'donate', component: () => import('@/views/DonateView.vue'), meta: { title: 'Faire un Don' } },
         { path: 'partenaires', name: 'partenaires', component: () => import('@/views/PartnersView.vue'), meta: { title: 'Partenaires' } },
         { path: 'feedback', name: 'feedback', component: () => import('@/views/FeedbackView.vue'), meta: { title: 'Feedback & Suggestions' } },
+        { path: 'galerie', name: 'galerie', component: () => import('@/views/GalleryView.vue'), meta: { title: 'Galerie' } },
       ]
     },
     {
@@ -36,6 +37,7 @@ const router = createRouter({
         { path: 'members', name: 'admin-members', component: () => import('@/views/admin/AdminMembers.vue'), meta: { title: 'Gestion des membres' } },
         { path: 'events', name: 'admin-events', component: () => import('@/views/admin/AdminEvents.vue'), meta: { title: 'Gestion des événements' } },
         { path: 'bookings', name: 'admin-bookings', component: () => import('@/views/admin/AdminBookings.vue'), meta: { title: 'Réservations' } },
+        { path: 'galerie', name: 'admin-galerie', component: () => import('@/views/admin/AdminGallery.vue'), meta: { title: 'Galerie' } },
       ]
     },
     {
