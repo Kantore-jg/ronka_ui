@@ -90,12 +90,12 @@ const recentDonations = computed(() => [...dataStore.donations].reverse().slice(
 </template>
 
 <style scoped>
-.admin-dashboard { color: #fff; }
+.admin-dashboard { color: var(--text-primary); }
 
 .admin-dashboard h1 {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 1.75rem;
-  color: #D4AF37;
+  color: var(--accent);
   margin-bottom: 1.5rem;
 }
 
@@ -107,7 +107,7 @@ const recentDonations = computed(() => [...dataStore.donations].reverse().slice(
 }
 
 .stat-card {
-  background: rgba(255,255,255,0.05);
+  background: var(--bg-card);
   border: 1px solid rgba(212, 175, 55, 0.2);
   border-radius: 10px;
   padding: 1.25rem;
@@ -116,7 +116,7 @@ const recentDonations = computed(() => [...dataStore.donations].reverse().slice(
 
 .stat-card.warning { border-color: rgba(234, 179, 8, 0.5); }
 .stat-value { display: block; font-size: 1.75rem; font-weight: 700; color: #D4AF37; }
-.stat-label { font-size: 0.85rem; color: rgba(255,255,255,0.7); }
+.stat-label { font-size: 0.85rem; color: var(--text-muted); }
 
 .dashboard-grid {
   display: grid;
@@ -126,7 +126,7 @@ const recentDonations = computed(() => [...dataStore.donations].reverse().slice(
 }
 
 .panel {
-  background: rgba(255,255,255,0.03);
+  background: var(--bg-card);
   border: 1px solid rgba(212, 175, 55, 0.15);
   border-radius: 12px;
   padding: 1.5rem;
@@ -134,18 +134,18 @@ const recentDonations = computed(() => [...dataStore.donations].reverse().slice(
 
 .panel h2 {
   font-size: 1rem;
-  color: #D4AF37;
+  color: var(--accent);
   margin-bottom: 1rem;
 }
 
 .list-item {
   padding: 0.75rem 0;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid var(--border);
 }
 
 .list-item:last-child { border-bottom: none; }
-.list-item small { color: rgba(255,255,255,0.5); font-size: 0.85rem; }
-.empty { color: rgba(255,255,255,0.5); font-size: 0.9rem; }
+.list-item small { color: var(--text-muted); font-size: 0.85rem; }
+.empty { color: var(--text-muted); font-size: 0.9rem; }
 .link { color: #D4AF37; font-size: 0.9rem; margin-top: 0.5rem; display: inline-block; }
 
 .quick-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
@@ -156,7 +156,7 @@ const recentDonations = computed(() => [...dataStore.donations].reverse().slice(
   text-decoration: none;
   font-size: 0.95rem;
 }
-.btn-primary { background: linear-gradient(135deg, #D4AF37, #B8960E); color: #0f0f14; }
+.btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent-hover)); color: var(--btn-primary-text); }
 .btn-outline { background: transparent; color: #D4AF37; border: 1px solid rgba(212, 175, 55, 0.5); }
 .btn-outline:hover { background: rgba(212, 175, 55, 0.15); }
 </style>

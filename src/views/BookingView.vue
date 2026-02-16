@@ -40,7 +40,7 @@ function submit() {
     <section class="booking-form-section">
       <div class="container">
         <div v-if="submitted" class="success-message">
-          <span class="icon">✓</span>
+          <i class="pi pi-check-circle icon"></i>
           <h3>Demande envoyée !</h3>
           <p>Nous avons bien reçu votre demande et vous contacterons rapidement.</p>
         </div>
@@ -81,7 +81,7 @@ function submit() {
 </template>
 
 <style scoped>
-.booking-page { color: #fff; padding-bottom: 4rem; }
+.booking-page { color: var(--text-primary); padding-bottom: 4rem; }
 
 .booking-hero {
   padding: 4rem 0 2rem;
@@ -92,19 +92,19 @@ function submit() {
 .booking-hero h1 {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 2.5rem;
-  color: #D4AF37;
+  color: var(--accent);
   margin-bottom: 0.5rem;
 }
 
-.booking-hero p { color: rgba(255,255,255,0.8); }
+.booking-hero p { color: var(--text-secondary); }
 
 .container { max-width: 600px; margin: 0 auto; padding: 0 2rem; }
 
 .booking-form-section { padding: 2rem 0; }
 
 .booking-form {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(212, 175, 55, 0.2);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 2rem;
 }
@@ -116,7 +116,7 @@ function submit() {
 .form-group label {
   display: block;
   margin-bottom: 0.5rem;
-  color: #D4AF37;
+  color: var(--accent);
   font-weight: 500;
   font-size: 0.9rem;
 }
@@ -126,10 +126,11 @@ function submit() {
 .form-group textarea {
   width: 100%;
   padding: 0.75rem 1rem;
-  background: rgba(0,0,0,0.3);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
   border-radius: 6px;
-  color: #fff;
+  color: var(--text-primary);
+  background: var(--input-bg);
   font-size: 1rem;
 }
 
@@ -137,7 +138,7 @@ function submit() {
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #D4AF37;
+  border-color: var(--accent);
 }
 
 .form-group textarea { resize: vertical; min-height: 100px; }
@@ -154,8 +155,8 @@ function submit() {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #D4AF37, #B8960E);
-  color: #0f0f14;
+  background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+  color: var(--btn-primary-text);
 }
 
 .btn-primary:hover { opacity: 0.95; }
@@ -182,5 +183,5 @@ function submit() {
 }
 
 .success-message h3 { color: #22c55e; margin-bottom: 0.5rem; }
-.success-message p { color: rgba(255,255,255,0.9); }
+.success-message p { color: var(--text-secondary); }
 </style>

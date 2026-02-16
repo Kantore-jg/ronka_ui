@@ -35,7 +35,7 @@ function submit() {
     <section class="donate-content">
       <div class="container">
         <div v-if="submitted" class="success-message">
-          <span class="icon">♥</span>
+          <i class="pi pi-heart-fill icon"></i>
           <h3>Merci pour votre don !</h3>
           <p>Votre générosité contribue au développement de notre club.</p>
         </div>
@@ -79,7 +79,7 @@ function submit() {
 </template>
 
 <style scoped>
-.donate-page { color: #fff; padding-bottom: 4rem; }
+.donate-page { color: var(--text-primary); padding-bottom: 4rem; }
 
 .donate-hero {
   padding: 4rem 0 2rem;
@@ -90,14 +90,14 @@ function submit() {
 .donate-hero h1 {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 2.5rem;
-  color: #D4AF37;
+  color: var(--accent);
   margin-bottom: 1rem;
 }
 
 .donate-desc {
   max-width: 600px;
   margin: 0 auto;
-  color: rgba(255,255,255,0.85);
+  color: var(--text-secondary);
   line-height: 1.6;
 }
 
@@ -106,7 +106,7 @@ function submit() {
 .donate-content { padding: 2rem 0; }
 
 .donate-form {
-  background: rgba(255,255,255,0.03);
+  background: var(--bg-card);
   border: 1px solid rgba(212, 175, 55, 0.2);
   border-radius: 12px;
   padding: 2rem;
@@ -117,7 +117,7 @@ function submit() {
 .form-group label {
   display: block;
   margin-bottom: 0.5rem;
-  color: #D4AF37;
+  color: var(--accent);
   font-weight: 500;
   font-size: 0.9rem;
 }
@@ -127,16 +127,17 @@ function submit() {
 .form-group textarea {
   width: 100%;
   padding: 0.75rem 1rem;
-  background: rgba(0,0,0,0.3);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
   border-radius: 6px;
-  color: #fff;
+  color: var(--text-primary);
+  background: var(--input-bg);
   font-size: 1rem;
 }
 
 .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
   outline: none;
-  border-color: #D4AF37;
+  border-color: var(--accent);
 }
 
 .btn {
@@ -151,8 +152,8 @@ function submit() {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #D4AF37, #B8960E);
-  color: #0f0f14;
+  background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+  color: var(--btn-primary-text);
 }
 
 .success-message {
@@ -165,11 +166,11 @@ function submit() {
 
 .success-message .icon { font-size: 3rem; display: block; margin-bottom: 0.5rem; color: #22c55e; }
 .success-message h3 { color: #22c55e; margin-bottom: 0.5rem; }
-.success-message p { color: rgba(255,255,255,0.9); }
+.success-message p { color: var(--text-secondary); }
 
 .donate-info {
   text-align: center;
-  color: rgba(255,255,255,0.6);
+  color: var(--text-muted);
   font-size: 0.9rem;
 }
 </style>

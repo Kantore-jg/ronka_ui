@@ -71,7 +71,7 @@ function addComment(eventId) {
 </template>
 
 <style scoped>
-.member-dashboard { color: #fff; }
+.member-dashboard { color: var(--text-primary); }
 
 .member-dashboard h1 {
   font-family: 'Playfair Display', Georgia, serif;
@@ -80,7 +80,7 @@ function addComment(eventId) {
   margin-bottom: 0.25rem;
 }
 
-.welcome { color: rgba(255,255,255,0.8); margin-bottom: 1.5rem; }
+.welcome { color: var(--text-secondary); margin-bottom: 1.5rem; }
 
 .section {
   margin-bottom: 2rem;
@@ -95,20 +95,20 @@ function addComment(eventId) {
 .events-list { display: flex; flex-direction: column; gap: 1rem; }
 
 .event-card {
-  background: rgba(255,255,255,0.03);
+  background: var(--bg-card);
   border: 1px solid rgba(212, 175, 55, 0.2);
   border-radius: 10px;
   padding: 1.25rem;
 }
 
-.event-card h3 { font-size: 1rem; color: #fff; margin-bottom: 0.25rem; }
-.event-card p { font-size: 0.9rem; color: rgba(255,255,255,0.8); }
-.desc { font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-top: 0.5rem; }
+.event-card h3 { font-size: 1rem; color: var(--text-primary); margin-bottom: 0.25rem; }
+.event-card p { font-size: 0.9rem; color: var(--text-secondary); }
+.desc { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem; }
 .comments { margin-top: 1rem; }
 .comment {
   font-size: 0.9rem;
   padding: 0.5rem;
-  background: rgba(0,0,0,0.2);
+  background: var(--input-bg);
   border-radius: 6px;
   margin-bottom: 0.5rem;
 }
@@ -116,15 +116,16 @@ function addComment(eventId) {
 .comment-input {
   flex: 1;
   padding: 0.5rem 0.75rem;
-  background: rgba(0,0,0,0.3);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
   border-radius: 6px;
-  color: #fff;
+  color: var(--text-primary);
+  background: var(--input-bg);
   font-size: 0.9rem;
 }
 .btn { padding: 0.5rem 1rem; border-radius: 6px; font-weight: 600; border: none; cursor: pointer; }
 .btn-sm { font-size: 0.85rem; }
 .btn-primary { background: linear-gradient(135deg, #D4AF37, #B8960E); color: #0f0f14; }
-.hint { font-size: 0.8rem; color: rgba(255,255,255,0.5); margin-top: 0.5rem; }
-.empty { color: rgba(255,255,255,0.5); }
+.hint { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem; }
+.empty { color: var(--text-muted); }
 </style>

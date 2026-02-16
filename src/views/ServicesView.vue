@@ -1,31 +1,31 @@
 <script setup>
 const services = [
   {
-    icon: '💒',
+    icon: 'pi-building',
     title: 'Cérémonies',
     desc: 'Mariages, funérailles, baptêmes et événements religieux. Notre équipe assure un service impeccable et discret.',
     details: ['Service de restauration', 'Mise en place', 'Accueil des invités']
   },
   {
-    icon: '🎉',
+    icon: 'pi-calendar',
     title: 'Événements',
     desc: 'Conférences, concerts, séminaires et manifestations. Organisation et logistique complètes.',
     details: ['Logistique', 'Accueil', 'Coordination']
   },
   {
-    icon: '🎂',
+    icon: 'pi-gift',
     title: 'Fêtes privées',
     desc: 'Anniversaires, fêtes de famille, soirées privées. Ambiance chaleureuse et professionnelle.',
     details: ['Service à table', 'Bar', 'Nettoyage']
   },
   {
-    icon: '👔',
+    icon: 'pi-users',
     title: 'Serveurs professionnels',
     desc: 'Mise à disposition de serveurs qualifiés pour tout type d\'événement. Formation et ponctualité garanties.',
     details: ['Service traiteur', 'Cocktails', 'Banquets']
   },
   {
-    icon: '🎯',
+    icon: 'pi-cog',
     title: 'Organisation complète',
     desc: 'De la planification à l\'exécution, nous gérons tous les aspects de votre événement.',
     details: ['Planification', 'Coordination', 'Suivi']
@@ -45,7 +45,7 @@ const services = [
     <section class="services-list">
       <div class="container">
         <div v-for="(s, i) in services" :key="i" class="service-item">
-          <div class="service-icon">{{ s.icon }}</div>
+          <div class="service-icon"><i :class="['pi', s.icon]"></i></div>
           <div class="service-body">
             <h2>{{ s.title }}</h2>
             <p>{{ s.desc }}</p>
@@ -70,7 +70,7 @@ const services = [
 </template>
 
 <style scoped>
-.services-page { color: #fff; padding-bottom: 4rem; }
+.services-page { color: var(--text-primary); padding-bottom: 4rem; }
 
 .services-hero {
   padding: 4rem 0;
@@ -81,12 +81,12 @@ const services = [
 .services-hero h1 {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 2.5rem;
-  color: #D4AF37;
+  color: var(--accent);
   margin-bottom: 0.5rem;
 }
 
 .services-hero p {
-  color: rgba(255,255,255,0.8);
+  color: var(--text-secondary);
   max-width: 600px;
   margin: 0 auto;
 }
@@ -100,30 +100,30 @@ const services = [
   gap: 2rem;
   align-items: flex-start;
   padding: 2rem 0;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid var(--border);
 }
 
 .service-item:last-of-type { border-bottom: none; }
 
 .service-icon {
-  font-size: 3rem;
+  font-size: 2rem;
   width: 80px;
   height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(212, 175, 55, 0.1);
+  background: var(--border);
   border-radius: 12px;
   flex-shrink: 0;
 }
 
 .service-body h2 {
   font-size: 1.5rem;
-  color: #D4AF37;
+  color: var(--accent);
   margin-bottom: 0.5rem;
 }
 
-.service-body p { color: rgba(255,255,255,0.85); margin-bottom: 0.75rem; line-height: 1.6; }
+.service-body p { color: var(--text-secondary); margin-bottom: 0.75rem; line-height: 1.6; }
 .service-body ul {
   list-style: none;
   padding: 0;
@@ -134,8 +134,8 @@ const services = [
 }
 
 .service-body li {
-  background: rgba(212, 175, 55, 0.15);
-  color: #D4AF37;
+  background: var(--border);
+  color: var(--accent);
   padding: 0.25rem 0.75rem;
   border-radius: 4px;
   font-size: 0.9rem;
@@ -149,7 +149,7 @@ const services = [
   margin: 0 2rem;
 }
 
-.services-cta p { margin-bottom: 1rem; color: rgba(255,255,255,0.9); }
+.services-cta p { margin-bottom: 1rem; color: var(--text-secondary); }
 .actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
 
 .btn {
@@ -161,9 +161,9 @@ const services = [
   transition: all 0.2s;
 }
 
-.btn-primary { background: linear-gradient(135deg, #D4AF37, #B8960E); color: #0f0f14; }
-.btn-outline { background: transparent; color: #D4AF37; border: 1px solid rgba(212, 175, 55, 0.5); }
-.btn-outline:hover { background: rgba(212, 175, 55, 0.15); }
+.btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent-hover)); color: var(--bg-primary); }
+.btn-outline { background: transparent; color: var(--accent); border: 1px solid var(--border); }
+.btn-outline:hover { background: var(--border); }
 
 @media (max-width: 640px) {
   .service-item { flex-direction: column; gap: 1rem; }

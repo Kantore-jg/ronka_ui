@@ -62,7 +62,7 @@ function register() {
 
 <style scoped>
 .auth-card {
-  background: rgba(255,255,255,0.03);
+  background: var(--bg-card);
   border: 1px solid rgba(212, 175, 55, 0.2);
   border-radius: 12px;
   padding: 2rem;
@@ -78,7 +78,7 @@ function register() {
 
 .subtitle {
   font-size: 0.85rem;
-  color: rgba(255,255,255,0.6);
+  color: var(--text-muted);
   text-align: center;
   margin-bottom: 1.5rem;
 }
@@ -87,23 +87,24 @@ function register() {
 .auth-form label {
   display: block;
   margin-bottom: 0.5rem;
-  color: rgba(255,255,255,0.9);
+  color: var(--text-secondary);
   font-size: 0.9rem;
 }
 
 .auth-form input {
   width: 100%;
   padding: 0.75rem 1rem;
-  background: rgba(0,0,0,0.3);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
   border-radius: 6px;
-  color: #fff;
+  color: var(--text-primary);
+  background: var(--input-bg);
   font-size: 1rem;
 }
 
 .auth-form input:focus {
   outline: none;
-  border-color: #D4AF37;
+  border-color: var(--accent);
 }
 
 .btn {
@@ -118,8 +119,8 @@ function register() {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #D4AF37, #B8960E);
-  color: #0f0f14;
+  background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+  color: var(--btn-primary-text);
 }
 
 .error-msg {
@@ -134,7 +135,7 @@ function register() {
 .auth-link {
   margin-top: 1rem;
   text-align: center;
-  color: rgba(255,255,255,0.8);
+  color: var(--text-secondary);
   font-size: 0.9rem;
 }
 

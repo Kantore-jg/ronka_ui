@@ -30,7 +30,7 @@ function submit() {
     <section class="feedback-content">
       <div class="container">
         <div v-if="submitted" class="success-message">
-          <span class="icon">✓</span>
+          <i class="pi pi-check-circle icon"></i>
           <h3>Message envoyé !</h3>
           <p>Merci pour votre contribution. Nous prenons chaque message en compte.</p>
         </div>
@@ -69,7 +69,7 @@ function submit() {
 </template>
 
 <style scoped>
-.feedback-page { color: #fff; padding-bottom: 4rem; }
+.feedback-page { color: var(--text-primary); padding-bottom: 4rem; }
 
 .feedback-hero {
   padding: 4rem 0 2rem;
@@ -80,19 +80,19 @@ function submit() {
 .feedback-hero h1 {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 2.5rem;
-  color: #D4AF37;
+  color: var(--accent);
   margin-bottom: 0.5rem;
 }
 
-.feedback-hero p { color: rgba(255,255,255,0.8); }
+.feedback-hero p { color: var(--text-secondary); }
 
 .container { max-width: 600px; margin: 0 auto; padding: 0 2rem; }
 
 .feedback-content { padding: 2rem 0; }
 
 .feedback-form {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(212, 175, 55, 0.2);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 2rem;
 }
@@ -101,7 +101,7 @@ function submit() {
 .form-group label {
   display: block;
   margin-bottom: 0.5rem;
-  color: #D4AF37;
+  color: var(--accent);
   font-weight: 500;
   font-size: 0.9rem;
 }
@@ -116,19 +116,19 @@ function submit() {
   align-items: center;
   gap: 0.5rem;
   cursor: pointer;
-  color: rgba(255,255,255,0.9);
+  color: var(--text-secondary);
 }
 
-.radio-label input { accent-color: #D4AF37; }
+.radio-label input { accent-color: var(--accent); }
 
 .form-group input,
 .form-group textarea {
   width: 100%;
   padding: 0.75rem 1rem;
-  background: rgba(0,0,0,0.3);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
   border-radius: 6px;
-  color: #fff;
+  color: var(--text-primary);
   font-size: 1rem;
 }
 
@@ -136,7 +136,7 @@ function submit() {
 
 .form-group input:focus, .form-group textarea:focus {
   outline: none;
-  border-color: #D4AF37;
+  border-color: var(--accent);
 }
 
 .btn {
@@ -151,8 +151,8 @@ function submit() {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #D4AF37, #B8960E);
-  color: #0f0f14;
+  background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+  color: var(--btn-primary-text);
 }
 
 .success-message {
@@ -177,5 +177,5 @@ function submit() {
 }
 
 .success-message h3 { color: #22c55e; margin-bottom: 0.5rem; }
-.success-message p { color: rgba(255,255,255,0.9); }
+.success-message p { color: var(--text-secondary); }
 </style>

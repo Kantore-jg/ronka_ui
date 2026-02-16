@@ -140,7 +140,7 @@ function addAdminComment(eventId) {
 </template>
 
 <style scoped>
-.admin-events { color: #fff; }
+.admin-events { color: var(--text-primary); }
 
 .header {
   display: flex;
@@ -154,12 +154,12 @@ function addAdminComment(eventId) {
 .admin-events h1 {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 1.75rem;
-  color: #D4AF37;
+  color: var(--accent);
 }
 
 .add-form {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(212, 175, 55, 0.2);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 1.5rem;
   margin-bottom: 2rem;
@@ -171,61 +171,61 @@ function addAdminComment(eventId) {
 .form-group input, .form-group textarea {
   width: 100%;
   padding: 0.6rem 0.75rem;
-  background: rgba(0,0,0,0.3);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
   border-radius: 6px;
-  color: #fff;
+  color: var(--text-primary);
 }
 
-.events-list h3 { font-size: 1rem; margin-bottom: 1rem; color: rgba(255,255,255,0.9); }
+.events-list h3 { font-size: 1rem; margin-bottom: 1rem; color: var(--text-secondary); }
 
 .event-card {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 1rem;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(212, 175, 55, 0.15);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 1.25rem;
   margin-bottom: 1rem;
   flex-wrap: wrap;
 }
 
-.event-info h4 { margin-bottom: 0.25rem; color: #D4AF37; }
-.event-info p { font-size: 0.9rem; color: rgba(255,255,255,0.8); }
-.event-info .desc { font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-top: 0.5rem; }
-.assigned { font-size: 0.85rem; margin-top: 0.5rem; color: rgba(255,255,255,0.7); }
+.event-info h4 { margin-bottom: 0.25rem; color: var(--accent); }
+.event-info p { font-size: 0.9rem; color: var(--text-secondary); }
+.event-info .desc { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem; }
+.assigned { font-size: 0.85rem; margin-top: 0.5rem; color: var(--text-secondary); }
 
-.comments-section { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.08); }
-.comments-section .comment { font-size: 0.9rem; padding: 0.5rem 0; color: rgba(255,255,255,0.85); }
+.comments-section { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+.comments-section .comment { font-size: 0.9rem; padding: 0.5rem 0; color: var(--text-secondary); }
 .add-comment { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
 .add-comment input {
   flex: 1;
   padding: 0.5rem 0.75rem;
-  background: rgba(0,0,0,0.3);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
   border-radius: 6px;
-  color: #fff;
+  color: var(--text-primary);
   font-size: 0.9rem;
 }
 
 .assign-box { display: flex; flex-direction: column; gap: 0.5rem; }
 .select {
   padding: 0.5rem;
-  background: rgba(0,0,0,0.3);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
   border-radius: 6px;
-  color: #fff;
+  color: var(--text-primary);
   font-size: 0.9rem;
 }
 
 .btn-row { display: flex; gap: 0.5rem; }
 .btn { padding: 0.6rem 1.25rem; border-radius: 6px; font-weight: 600; border: none; cursor: pointer; font-size: 0.9rem; }
-.btn-primary { background: linear-gradient(135deg, #D4AF37, #B8960E); color: #0f0f14; }
+.btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent-hover)); color: var(--btn-primary-text); }
 .btn-sm { padding: 0.4rem 0.75rem; font-size: 0.8rem; }
-.btn-outline { background: transparent; color: #D4AF37; border: 1px solid rgba(212, 175, 55, 0.5); }
-.empty { color: rgba(255,255,255,0.5); font-size: 0.9rem; }
+.btn-outline { background: transparent; color: var(--accent); border: 1px solid var(--border); }
+.empty { color: var(--text-muted); font-size: 0.9rem; }
 
 .admin-panels {
   display: grid;
@@ -235,8 +235,8 @@ function addAdminComment(eventId) {
 }
 
 .panel {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(212, 175, 55, 0.15);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 1.25rem;
 }
@@ -244,9 +244,9 @@ function addAdminComment(eventId) {
 .panel h3 { font-size: 1rem; color: #D4AF37; margin-bottom: 1rem; }
 .panel .item {
   padding: 0.75rem 0;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid var(--border);
 }
 .panel .item:last-child { border-bottom: none; }
 .panel .item p { font-size: 0.9rem; margin-bottom: 0.25rem; }
-.panel .item small { font-size: 0.8rem; color: rgba(255,255,255,0.5); }
+.panel .item small { font-size: 0.8rem; color: var(--text-muted); }
 </style>

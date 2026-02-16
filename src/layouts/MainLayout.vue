@@ -2,8 +2,10 @@
 import { ref, computed } from 'vue'
 import { RouterView } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import { useThemeStore } from '@/stores/theme'
 
 const authStore = useAuthStore()
+const themeStore = useThemeStore()
 const mobileMenuOpen = ref(false)
 
 const navLinks = computed(() => [
@@ -28,15 +30,15 @@ function getDashboardLink() {
     <header class="header">
       <nav class="nav">
         <router-link to="/" class="logo">
-          <span class="logo-text">RONKA</span>
-          <span class="logo-sub">Event Multi Service</span>
+          <img src="/logo.png" alt="RONKA" class="logo-img">
+          <div class="logo-text-wrap">
+            <span class="logo-text">RONKA</span>
+            <span class="logo-sub">Event Multi Service</span>
+          </div>
         </router-link>
         
-        <button class="mobile-toggle" @click="mobileMenuOpen = !mobileMenuOpen" aria-label="Menu">
-          <span></span><span></span><span></span>
-        </button>
-        
-        <ul class="nav-links" :class="{ open: mobileMenuOpen }">
+        <div class="nav-right">
+          <ul class="nav-links" :class="{ open: mobileMenuOpen }">
           <li v-for="link in navLinks" :key="link.to">
             <router-link :to="link.to" @click="mobileMenuOpen = false">{{ link.name }}</router-link>
           </li>
@@ -49,7 +51,14 @@ function getDashboardLink() {
             <router-link to="/auth/login" @click="mobileMenuOpen = false">Se connecter</router-link>
             <router-link to="/auth/register" @click="mobileMenuOpen = false" class="btn-login">S'inscrire</router-link>
           </li>
-        </ul>
+          </ul>
+          <button @click="themeStore.toggle()" class="theme-toggle" :title="themeStore.isLight ? 'Thème sombre' : 'Thème clair'" aria-label="Changer le thème">
+            <i :class="themeStore.isLight ? 'pi pi-moon' : 'pi pi-sun'"></i>
+          </button>
+          <button class="mobile-toggle" @click="mobileMenuOpen = !mobileMenuOpen" aria-label="Menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
       </nav>
     </header>
     
@@ -60,6 +69,7 @@ function getDashboardLink() {
     <footer class="footer">
       <div class="footer-content">
         <div class="footer-brand">
+          <img src="/logo.png" alt="RONKA" class="footer-logo">
           <span class="logo-text">RONKA</span>
           <span class="logo-sub">Event Multi Service</span>
           <p>30-50 jeunes au service de vos événements</p>
@@ -72,7 +82,9 @@ function getDashboardLink() {
           <router-link to="/feedback">Feedback</router-link>
         </div>
         <div class="footer-social">
-          <a href="https://www.instagram.com/ronka_multiservices/" target="_blank" rel="noopener" aria-label="Instagram">Instagram</a>
+          <a href="https://www.instagram.com/ronka_multiservices/" target="_blank" rel="noopener" aria-label="Instagram">
+            <i class="pi pi-instagram"></i> Instagram
+          </a>
         </div>
       </div>
       <div class="footer-bottom">
@@ -95,9 +107,9 @@ function getDashboardLink() {
   left: 0;
   right: 0;
   z-index: 100;
-  background: rgba(15, 15, 20, 0.95);
+  background: var(--bg-secondary);
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+  border-bottom: 1px solid var(--border);
 }
 
 .nav {
@@ -113,22 +125,51 @@ function getDashboardLink() {
   text-decoration: none;
   color: inherit;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
 }
 
+.logo-img {
+  width: 42px;
+  height: 42px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.logo-text-wrap { display: flex; flex-direction: column; }
 .logo-text {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 1.5rem;
   font-weight: 700;
-  color: #D4AF37;
+  color: var(--accent);
   letter-spacing: 0.15em;
 }
 
 .logo-sub {
   font-size: 0.7rem;
-  color: rgba(255,255,255,0.7);
+  color: var(--text-muted);
   letter-spacing: 0.2em;
   text-transform: uppercase;
+}
+
+.nav-right { display: flex; align-items: center; gap: 1rem; }
+.theme-toggle {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--accent);
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  transition: all 0.2s;
+}
+.theme-toggle:hover {
+  background: var(--accent);
+  color: var(--bg-primary);
 }
 
 .nav-links {
@@ -141,7 +182,7 @@ function getDashboardLink() {
 }
 
 .nav-links a {
-  color: rgba(255,255,255,0.9);
+  color: var(--text-secondary);
   text-decoration: none;
   font-size: 0.9rem;
   font-weight: 500;
@@ -149,13 +190,13 @@ function getDashboardLink() {
 }
 
 .nav-links a:hover, .nav-links a.router-link-active {
-  color: #D4AF37;
+  color: var(--accent);
 }
 
-.dashboard-link { color: #D4AF37 !important; }
+.dashboard-link { color: var(--accent) !important; }
 .btn-login {
-  background: linear-gradient(135deg, #D4AF37, #B8960E);
-  color: #0f0f14 !important;
+  background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+  color: var(--bg-primary) !important;
   padding: 0.5rem 1.25rem;
   border-radius: 4px;
   font-weight: 600;
@@ -174,16 +215,16 @@ function getDashboardLink() {
 .mobile-toggle span {
   width: 25px;
   height: 2px;
-  background: #D4AF37;
+  background: var(--accent);
 }
 
 .main-content { flex: 1; padding-top: 80px; }
 
 .footer {
-  background: #0a0a0e;
-  color: rgba(255,255,255,0.8);
+  background: var(--bg-secondary);
+  color: var(--text-muted);
   margin-top: auto;
-  border-top: 1px solid rgba(212, 175, 55, 0.2);
+  border-top: 1px solid var(--border);
 }
 
 .footer-content {
@@ -195,15 +236,16 @@ function getDashboardLink() {
   gap: 2rem;
 }
 
+.footer-logo { width: 36px; height: 36px; border-radius: 6px; object-fit: cover; margin-bottom: 0.5rem; }
 .footer-brand .logo-text { font-size: 1.2rem; }
 .footer-brand p { margin-top: 0.5rem; opacity: 0.8; font-size: 0.9rem; }
 .footer-links { display: flex; flex-direction: column; gap: 0.5rem; }
 .footer-links a { color: inherit; text-decoration: none; }
-.footer-links a:hover { color: #D4AF37; }
+.footer-links a:hover { color: var(--accent); }
 .footer-bottom {
   padding: 1rem 2rem;
   text-align: center;
-  border-top: 1px solid rgba(255,255,255,0.1);
+  border-top: 1px solid var(--border);
   font-size: 0.85rem;
   opacity: 0.7;
 }
@@ -216,7 +258,7 @@ function getDashboardLink() {
     left: 0;
     right: 0;
     flex-direction: column;
-    background: rgba(15, 15, 20, 0.98);
+    background: var(--bg-secondary);
     padding: 2rem;
     gap: 1rem;
     transform: translateY(-100%);

@@ -17,8 +17,8 @@ const bookings = dataStore.bookings
           <span class="date">{{ b.date }}</span>
         </div>
         <p class="event-type">{{ b.eventType }}</p>
-        <p class="lieu">📍 {{ b.lieu }}</p>
-        <p v-if="b.contact" class="contact">📞 {{ b.contact }}</p>
+        <p class="lieu"><i class="pi pi-map-marker"></i> {{ b.lieu }}</p>
+        <p v-if="b.contact" class="contact"><i class="pi pi-phone"></i> {{ b.contact }}</p>
         <p v-if="b.description" class="desc">{{ b.description }}</p>
       </div>
     </div>
@@ -27,16 +27,16 @@ const bookings = dataStore.bookings
 </template>
 
 <style scoped>
-.admin-bookings { color: #fff; }
+.admin-bookings { color: var(--text-primary); }
 
 .admin-bookings h1 {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 1.75rem;
-  color: #D4AF37;
+  color: var(--accent);
   margin-bottom: 0.25rem;
 }
 
-.subtitle { color: rgba(255,255,255,0.6); margin-bottom: 1.5rem; font-size: 0.9rem; }
+.subtitle { color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.9rem; }
 
 .bookings-grid {
   display: grid;
@@ -45,8 +45,8 @@ const bookings = dataStore.bookings
 }
 
 .booking-card {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(212, 175, 55, 0.2);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 1.25rem;
 }
@@ -58,10 +58,11 @@ const bookings = dataStore.bookings
   margin-bottom: 0.5rem;
 }
 
-.booking-header h3 { font-size: 1.1rem; color: #D4AF37; }
-.date { font-size: 0.85rem; color: rgba(255,255,255,0.6); }
+.booking-header h3 { font-size: 1.1rem; color: var(--accent); }
+.date { font-size: 0.85rem; color: var(--text-muted); }
 .event-type { font-weight: 600; margin-bottom: 0.25rem; }
-.lieu, .contact { font-size: 0.9rem; color: rgba(255,255,255,0.8); margin-bottom: 0.25rem; }
-.desc { font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-top: 0.5rem; line-height: 1.4; }
-.empty { color: rgba(255,255,255,0.5); }
+.lieu, .contact { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.25rem; }
+.lieu i, .contact i { margin-right: 0.35rem; }
+.desc { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem; line-height: 1.4; }
+.empty { color: var(--text-muted); }
 </style>

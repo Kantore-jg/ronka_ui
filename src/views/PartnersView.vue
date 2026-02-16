@@ -28,7 +28,7 @@ function submit() {
     <section class="partners-content">
       <div class="container">
         <div v-if="submitted" class="success-message">
-          <span class="icon">✓</span>
+          <i class="pi pi-check-circle icon"></i>
           <h3>Demande envoyée !</h3>
           <p>Nous étudierons votre dossier et vous contacterons sous peu.</p>
         </div>
@@ -72,7 +72,7 @@ function submit() {
 </template>
 
 <style scoped>
-.partners-page { color: #fff; padding-bottom: 4rem; }
+.partners-page { color: var(--text-primary); padding-bottom: 4rem; }
 
 .partners-hero {
   padding: 4rem 0 2rem;
@@ -83,19 +83,19 @@ function submit() {
 .partners-hero h1 {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 2.5rem;
-  color: #D4AF37;
+  color: var(--accent);
   margin-bottom: 0.5rem;
 }
 
-.partners-hero p { color: rgba(255,255,255,0.8); }
+.partners-hero p { color: var(--text-secondary); }
 
 .container { max-width: 600px; margin: 0 auto; padding: 0 2rem; }
 
 .partners-content { padding: 2rem 0; }
 
 .partners-form {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(212, 175, 55, 0.2);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 2rem;
   margin-bottom: 3rem;
@@ -105,7 +105,7 @@ function submit() {
 .form-group label {
   display: block;
   margin-bottom: 0.5rem;
-  color: #D4AF37;
+  color: var(--accent);
   font-weight: 500;
   font-size: 0.9rem;
 }
@@ -114,16 +114,16 @@ function submit() {
 .form-group textarea {
   width: 100%;
   padding: 0.75rem 1rem;
-  background: rgba(0,0,0,0.3);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
   border-radius: 6px;
-  color: #fff;
+  color: var(--text-primary);
   font-size: 1rem;
 }
 
 .form-group input:focus, .form-group textarea:focus {
   outline: none;
-  border-color: #D4AF37;
+  border-color: var(--accent);
 }
 
 .btn {
@@ -138,8 +138,8 @@ function submit() {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #D4AF37, #B8960E);
-  color: #0f0f14;
+  background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+  color: var(--btn-primary-text);
 }
 
 .success-message {
@@ -165,13 +165,13 @@ function submit() {
 }
 
 .success-message h3 { color: #22c55e; margin-bottom: 0.5rem; }
-.success-message p { color: rgba(255,255,255,0.9); }
+.success-message p { color: var(--text-secondary); }
 
 .partners-logos { margin-top: 3rem; }
 .partners-logos h2 {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 1.5rem;
-  color: #D4AF37;
+  color: var(--accent);
   text-align: center;
   margin-bottom: 1.5rem;
 }
@@ -187,17 +187,17 @@ function submit() {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  background: rgba(255,255,255,0.03);
+  background: var(--bg-card);
   padding: 1rem 1.5rem;
   border-radius: 8px;
-  border: 1px solid rgba(212, 175, 55, 0.15);
+  border: 1px solid var(--border);
 }
 
 .partner-logo {
   width: 48px;
   height: 48px;
   background: rgba(212, 175, 55, 0.2);
-  color: #D4AF37;
+  color: var(--accent);
   border-radius: 50%;
   display: flex;
   align-items: center;

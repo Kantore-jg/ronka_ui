@@ -33,22 +33,22 @@
         <h2>Nos services</h2>
         <div class="services-grid">
           <div class="service-card">
-            <span class="icon">💒</span>
+            <i class="pi pi-building service-icon"></i>
             <h3>Cérémonies</h3>
             <p>Mariages, funérailles et événements religieux</p>
           </div>
           <div class="service-card">
-            <span class="icon">🎉</span>
+            <i class="pi pi-calendar service-icon"></i>
             <h3>Événements</h3>
             <p>Conférences, concerts et manifestations</p>
           </div>
           <div class="service-card">
-            <span class="icon">🎂</span>
+            <i class="pi pi-gift service-icon"></i>
             <h3>Fêtes privées</h3>
             <p>Anniversaires, fêtes de famille</p>
           </div>
           <div class="service-card">
-            <span class="icon">👔</span>
+            <i class="pi pi-users service-icon"></i>
             <h3>Service traiteur</h3>
             <p>Mise à disposition de serveurs professionnels</p>
           </div>
@@ -70,7 +70,7 @@
 </template>
 
 <style scoped>
-.home { color: #fff; }
+.home { color: var(--text-primary); }
 
 .hero {
   min-height: 85vh;
@@ -79,7 +79,7 @@
   justify-content: center;
   position: relative;
   background: radial-gradient(ellipse at 50% 30%, rgba(212, 175, 55, 0.12) 0%, transparent 55%),
-              linear-gradient(180deg, #0f0f14 0%, #16161d 100%);
+              linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
   overflow: hidden;
 }
 
@@ -105,19 +105,19 @@
   font-family: 'Playfair Display', Georgia, serif;
   font-size: clamp(2rem, 5vw, 3.5rem);
   font-weight: 700;
-  color: #D4AF37;
+  color: var(--accent);
   letter-spacing: 0.05em;
   margin-bottom: 0.5rem;
 }
 
 .hero-tagline {
   font-size: 1.25rem;
-  color: rgba(255,255,255,0.9);
+  color: var(--text-secondary);
   margin-bottom: 0.75rem;
 }
 
 .hero-desc {
-  color: rgba(255,255,255,0.7);
+  color: var(--text-muted);
   margin-bottom: 2rem;
   line-height: 1.6;
 }
@@ -141,7 +141,7 @@
 
 .btn-primary {
   background: linear-gradient(135deg, #D4AF37, #B8960E);
-  color: #0f0f14;
+  color: var(--bg-primary);
 }
 
 .btn-primary:hover {
@@ -151,18 +151,18 @@
 
 .btn-secondary {
   background: rgba(212, 175, 55, 0.2);
-  color: #D4AF37;
-  border: 1px solid rgba(212, 175, 55, 0.5);
+  color: var(--accent);
+  border: 1px solid var(--border);
 }
 
 .btn-outline {
   background: transparent;
-  color: #D4AF37;
-  border: 1px solid rgba(212, 175, 55, 0.5);
+  color: var(--accent);
+  border: 1px solid var(--border);
 }
 
 .btn-outline:hover, .btn-secondary:hover {
-  background: rgba(212, 175, 55, 0.15);
+  background: var(--border);
 }
 
 .container {
@@ -179,7 +179,7 @@
 .mission h2, .quick-services h2, .cta h2 {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 2rem;
-  color: #D4AF37;
+  color: var(--accent);
   text-align: center;
   margin-bottom: 1.5rem;
 }
@@ -188,7 +188,7 @@
   text-align: center;
   max-width: 700px;
   margin: 0 auto;
-  color: rgba(255,255,255,0.85);
+  color: var(--text-secondary);
   line-height: 1.7;
 }
 
@@ -202,7 +202,7 @@
 }
 
 .service-card {
-  background: rgba(255,255,255,0.03);
+  background: var(--bg-card);
   border: 1px solid rgba(212, 175, 55, 0.15);
   border-radius: 12px;
   padding: 1.5rem;
@@ -216,9 +216,9 @@
   box-shadow: 0 8px 30px rgba(0,0,0,0.3);
 }
 
-.service-card .icon { font-size: 2.5rem; display: block; margin-bottom: 0.5rem; }
-.service-card h3 { font-size: 1.1rem; margin-bottom: 0.25rem; color: #fff; }
-.service-card p { font-size: 0.9rem; color: rgba(255,255,255,0.6); }
+.service-card .service-icon { font-size: 2.5rem; display: block; margin-bottom: 0.5rem; color: var(--accent); }
+.service-card h3 { font-size: 1.1rem; margin-bottom: 0.25rem; color: var(--text-primary); }
+.service-card p { font-size: 0.9rem; color: var(--text-muted); }
 .center { display: block; text-align: center; margin: 0 auto; }
 
 .cta {

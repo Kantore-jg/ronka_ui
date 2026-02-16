@@ -46,7 +46,7 @@ const myPartners = dataStore.partners
       <h2>Demandes de partenariat</h2>
       <div v-if="myPartners.length" class="list">
         <div v-for="p in [...myPartners].reverse()" :key="p.id" class="item">
-          {{ p.name }} — {{ p.status === 'approved' ? '✓ Approuvé' : 'En attente' }}
+          {{ p.name }} — {{ p.status === 'approved' ? 'Approuvé' : 'En attente' }}
         </div>
       </div>
       <p v-else class="empty">Aucune demande.</p>
@@ -56,27 +56,27 @@ const myPartners = dataStore.partners
 </template>
 
 <style scoped>
-.public-dashboard { color: #fff; }
+.public-dashboard { color: var(--text-primary); }
 
 .public-dashboard h1 {
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 1.75rem;
-  color: #D4AF37;
+  color: var(--accent);
   margin-bottom: 0.25rem;
 }
 
-.welcome { color: rgba(255,255,255,0.8); margin-bottom: 1rem; }
+.welcome { color: var(--text-secondary); margin-bottom: 1rem; }
 
 .info-card {
-  background: rgba(212, 175, 55, 0.08);
-  border: 1px solid rgba(212, 175, 55, 0.2);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 1.25rem;
   margin-bottom: 2rem;
 }
 
-.info-card p { margin-bottom: 0.5rem; color: rgba(255,255,255,0.9); }
-.info-card .note { font-size: 0.85rem; color: rgba(255,255,255,0.6); }
+.info-card p { margin-bottom: 0.5rem; color: var(--text-secondary); }
+.info-card .note { font-size: 0.85rem; color: var(--text-muted); }
 
 .section { margin-bottom: 2rem; }
 .section h2 { font-size: 1.1rem; color: #D4AF37; margin-bottom: 1rem; }
@@ -84,13 +84,13 @@ const myPartners = dataStore.partners
 .list { margin-bottom: 0.5rem; }
 .item {
   padding: 0.75rem;
-  background: rgba(255,255,255,0.03);
+  background: var(--bg-card);
   border-radius: 6px;
   margin-bottom: 0.5rem;
   font-size: 0.9rem;
 }
 
-.empty { color: rgba(255,255,255,0.5); margin-bottom: 0.5rem; }
+.empty { color: var(--text-muted); margin-bottom: 0.5rem; }
 .link { color: #D4AF37; font-size: 0.9rem; }
 .link:hover { text-decoration: underline; }
 </style>

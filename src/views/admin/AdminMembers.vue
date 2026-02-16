@@ -91,7 +91,7 @@ function removeMember(id) {
 </template>
 
 <style scoped>
-.admin-members { color: #fff; }
+.admin-members { color: var(--text-primary); }
 
 .header {
   display: flex;
@@ -109,33 +109,33 @@ function removeMember(id) {
 }
 
 .add-form {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(212, 175, 55, 0.2);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 1.5rem;
   margin-bottom: 2rem;
 }
 
-.add-form h3 { font-size: 1rem; margin-bottom: 0.5rem; color: #fff; }
-.hint { font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-bottom: 1rem; }
+.add-form h3 { font-size: 1rem; margin-bottom: 0.5rem; color: var(--text-primary); }
+.hint { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; }
 
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
 .form-group label { display: block; margin-bottom: 0.35rem; font-size: 0.9rem; color: #D4AF37; }
 .form-group input {
   width: 100%;
   padding: 0.6rem 0.75rem;
-  background: rgba(0,0,0,0.3);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
   border-radius: 6px;
-  color: #fff;
+  color: var(--text-primary);
 }
 
-.members-list h3 { font-size: 1rem; margin-bottom: 1rem; color: rgba(255,255,255,0.9); }
+.members-list h3 { font-size: 1rem; margin-bottom: 1rem; color: var(--text-secondary); }
 .table-wrap { overflow-x: auto; }
 .members-table {
   width: 100%;
   border-collapse: collapse;
-  background: rgba(255,255,255,0.02);
+  background: var(--bg-card);
   border-radius: 8px;
   overflow: hidden;
 }
@@ -144,7 +144,7 @@ function removeMember(id) {
 .members-table td {
   padding: 0.85rem 1rem;
   text-align: left;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid var(--border);
 }
 
 .members-table th {
@@ -155,7 +155,7 @@ function removeMember(id) {
 }
 
 .members-table code {
-  background: rgba(0,0,0,0.3);
+  background: var(--input-bg);
   padding: 0.2rem 0.5rem;
   border-radius: 4px;
   font-size: 0.85rem;
@@ -170,11 +170,11 @@ function removeMember(id) {
   font-size: 0.9rem;
 }
 
-.btn-primary { background: linear-gradient(135deg, #D4AF37, #B8960E); color: #0f0f14; }
+.btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent-hover)); color: var(--btn-primary-text); }
 .btn-sm { padding: 0.4rem 0.75rem; font-size: 0.8rem; }
 .btn-danger { background: rgba(239, 68, 68, 0.3); color: #ef4444; }
 .btn-danger:hover { background: rgba(239, 68, 68, 0.5); }
-.empty { color: rgba(255,255,255,0.5); }
+.empty { color: var(--text-muted); }
 
 @media (max-width: 640px) {
   .form-row { grid-template-columns: 1fr; }
