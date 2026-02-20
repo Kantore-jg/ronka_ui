@@ -1,10 +1,13 @@
 <script setup>
 import { ref } from 'vue'
 import { useDataStore } from '@/stores/data'
+import { donationsApi } from '@/api/client'
 
 const dataStore = useDataStore()
 const form = ref({ name: '', contact: '', amount: '', method: 'mobile_money', paymentDetails: '', message: '' })
 const submitted = ref(false)
+const error = ref('')
+const apiUrl = import.meta.env.VITE_API_URL
 
 const paymentMethods = [
   { value: 'mobile_money', label: 'Mobile Money (M-Pesa, Orange...)', placeholder: 'Numéro de téléphone' },
@@ -12,8 +15,20 @@ const paymentMethods = [
   { value: 'cash', label: 'Espèces', placeholder: 'Précisez comment' }
 ]
 
-function submit() {
+async function submit() {
   if (!form.value.name || !form.value.contact || !form.value.amount) return
+  error.value = ''
+  if (apiUrl) {
+    try {
+      await donationsApi.create(form.value)
+      submitted.value = true
+      form.value = { name: '', contact: '', amount: '', method: 'mobile_money', paymentDetails: '', message: '' }
+      return
+    } catch (e) {
+      error.value = e.message || 'Erreur lors de l\'envoi.'
+      return
+    }
+  }
   dataStore.addDonation(form.value)
   submitted.value = true
   form.value = { name: '', contact: '', amount: '', method: 'mobile_money', paymentDetails: '', message: '' }
@@ -41,6 +56,7 @@ function submit() {
         </div>
 
         <form v-else class="donate-form" @submit.prevent="submit">
+          <div v-if="error" class="error-msg">{{ error }}</div>
           <div class="form-group">
             <label for="name">Nom *</label>
             <input id="name" v-model="form.name" type="text" required placeholder="Votre nom">
@@ -138,6 +154,15 @@ function submit() {
 .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
   outline: none;
   border-color: var(--accent);
+}
+
+.error-msg {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  padding: 0.75rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
 }
 
 .btn {

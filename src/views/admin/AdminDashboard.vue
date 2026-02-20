@@ -1,27 +1,92 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { useDataStore } from '@/stores/data'
+import { useAuthStore } from '@/stores/auth'
+import { bookingsApi, donationsApi, partnersApi, feedbackApi, membersApi, eventsApi } from '@/api/client'
 
 const dataStore = useDataStore()
+const authStore = useAuthStore()
+const apiUrl = import.meta.env.VITE_API_URL
+const hasToken = computed(() => !!authStore.user?.token)
 
-const stats = computed(() => ({
-  bookings: dataStore.bookings.length,
-  donations: dataStore.donations.length,
-  partners: dataStore.partners.filter(p => p.status === 'approved').length,
-  partnersPending: dataStore.partners.filter(p => p.status === 'pending').length,
-  feedbacks: dataStore.feedbacks.length,
-  suggestions: dataStore.suggestions.length,
-  members: dataStore.members.length,
-  events: dataStore.events.length,
-}))
+const bookings = ref([])
+const donations = ref([])
+const partners = ref([])
+const feedbacks = ref([])
+const members = ref([])
+const events = ref([])
+const loading = ref(true)
+const error = ref('')
 
-const recentBookings = computed(() => [...dataStore.bookings].reverse().slice(0, 5))
-const recentDonations = computed(() => [...dataStore.donations].reverse().slice(0, 5))
+const stats = computed(() => {
+  if (apiUrl && hasToken.value) {
+    const feedAll = feedbacks.value || []
+    const feedAndSugg = feedAll.filter(f => f.type === 'feedback').length + feedAll.filter(f => f.type === 'suggestion').length
+    return {
+      bookings: (bookings.value || []).length,
+      donations: (donations.value || []).length,
+      partners: (partners.value || []).filter(p => p.status === 'approved').length,
+      partnersPending: (partners.value || []).filter(p => p.status === 'pending').length,
+      feedbacks: feedAndSugg,
+      suggestions: 0,
+      members: (members.value || []).length,
+      events: (events.value || []).length,
+    }
+  }
+  return {
+    bookings: dataStore.bookings.length,
+    donations: dataStore.donations.length,
+    partners: dataStore.partners.filter(p => p.status === 'approved').length,
+    partnersPending: dataStore.partners.filter(p => p.status === 'pending').length,
+    feedbacks: dataStore.feedbacks.length,
+    suggestions: dataStore.suggestions.length,
+    members: dataStore.members.length,
+    events: dataStore.events.length,
+  }
+})
+
+const recentBookings = computed(() => {
+  const list = (apiUrl && hasToken.value) ? bookings.value : dataStore.bookings
+  return [...list].reverse().slice(0, 5)
+})
+const recentDonations = computed(() => {
+  const list = (apiUrl && hasToken.value) ? donations.value : dataStore.donations
+  return [...list].reverse().slice(0, 5)
+})
+
+onMounted(async () => {
+  if (!apiUrl || !hasToken.value) {
+    loading.value = false
+    return
+  }
+  try {
+    const [b, d, p, f, m, e] = await Promise.all([
+      bookingsApi.list(),
+      donationsApi.list(),
+      partnersApi.list(),
+      feedbackApi.list(),
+      membersApi.list(),
+      eventsApi.list(),
+    ])
+    bookings.value = Array.isArray(b) ? b : []
+    donations.value = Array.isArray(d) ? d : []
+    partners.value = Array.isArray(p) ? p : []
+    feedbacks.value = Array.isArray(f) ? f : []
+    members.value = Array.isArray(m) ? m : []
+    events.value = Array.isArray(e) ? e : []
+  } catch (err) {
+    error.value = err.message || 'Erreur lors du chargement.'
+  } finally {
+    loading.value = false
+  }
+})
 </script>
 
 <template>
   <div class="admin-dashboard">
     <h1>Tableau de bord Admin</h1>
+    <p v-if="error" class="error-msg">{{ error }}</p>
+    <p v-if="loading" class="loading">Chargement...</p>
     
     <div class="stats-grid">
       <div class="stat-card">
@@ -60,9 +125,9 @@ const recentDonations = computed(() => [...dataStore.donations].reverse().slice(
         <div v-if="recentBookings.length" class="list">
           <div v-for="b in recentBookings" :key="b.id" class="list-item">
             <div>
-              <strong>{{ b.name }}</strong> — {{ b.eventType }}
+              <strong>{{ b.name }}</strong> — {{ b.eventType || b.event_type }}
             </div>
-            <small>{{ b.date }} • {{ b.lieu }}</small>
+            <small>{{ (b.date || b.created_at)?.slice?.(0, 10) }} • {{ b.lieu }}</small>
           </div>
         </div>
         <p v-else class="empty">Aucune réservation</p>
@@ -75,7 +140,7 @@ const recentDonations = computed(() => [...dataStore.donations].reverse().slice(
             <div>
               <strong>{{ d.name }}</strong> — {{ d.amount }}
             </div>
-            <small>{{ d.method }}</small>
+            <small>{{ d.method || '-' }}</small>
           </div>
         </div>
         <p v-else class="empty">Aucun don</p>
@@ -91,6 +156,16 @@ const recentDonations = computed(() => [...dataStore.donations].reverse().slice(
 
 <style scoped>
 .admin-dashboard { color: var(--text-primary); }
+
+.error-msg {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  padding: 0.75rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+}
+
+.loading { color: var(--text-muted); margin-bottom: 1rem; }
 
 .admin-dashboard h1 {
   font-family: 'Playfair Display', Georgia, serif;

@@ -1,13 +1,32 @@
 <script setup>
 import { ref } from 'vue'
 import { useDataStore } from '@/stores/data'
+import { useAuthStore } from '@/stores/auth'
+import { feedbackApi } from '@/api/client'
 
 const dataStore = useDataStore()
+const authStore = useAuthStore()
 const form = ref({ type: 'feedback', name: '', contact: '', message: '' })
 const submitted = ref(false)
+const error = ref('')
 
-function submit() {
+async function submit() {
   if (!form.value.message) return
+  error.value = ''
+  const apiUrl = import.meta.env.VITE_API_URL
+  
+  if (apiUrl && apiUrl.length > 0) {
+    try {
+      await feedbackApi.create(form.value)
+      submitted.value = true
+      form.value = { type: 'feedback', name: '', contact: '', message: '' }
+      return
+    } catch (e) {
+      error.value = e.message || 'Erreur lors de l\'envoi.'
+      return
+    }
+  }
+  
   if (form.value.type === 'feedback') {
     dataStore.addFeedback(form.value)
   } else {
@@ -36,6 +55,7 @@ function submit() {
         </div>
 
         <form v-else class="feedback-form" @submit.prevent="submit">
+          <div v-if="error" class="error-msg">{{ error }}</div>
           <div class="form-group">
             <label>Type</label>
             <div class="radio-group">

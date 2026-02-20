@@ -1,13 +1,21 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useDataStore } from '@/stores/data'
+import { eventsApi } from '@/api/client'
 
 const authStore = useAuthStore()
 const dataStore = useDataStore()
 const newComment = ref({})
+const apiUrl = import.meta.env.VITE_API_URL
+const apiEvents = ref([])
 
 const myAssignments = computed(() => {
+  // Use API events if available, otherwise fallback to dataStore
+  if (apiUrl && authStore.user?.token) {
+    return apiEvents.value
+  }
+  
   const myId = authStore.user?.id
   if (!myId) return []
   return dataStore.eventAssignments
@@ -16,17 +24,50 @@ const myAssignments = computed(() => {
     .filter(Boolean)
 })
 
-const pastEvents = computed(() => 
-  dataStore.events.filter(e => new Date(e.date) < new Date())
-)
+onMounted(async () => {
+  if (apiUrl && authStore.user?.token) {
+    try {
+      const data = await eventsApi.list()
+      apiEvents.value = Array.isArray(data) ? data : []
+    } catch (e) {
+      console.error('Erreur chargement événements:', e)
+    }
+  }
+})
 
-const eventComments = computed(() => dataStore.eventComments)
+const pastEvents = computed(() => {
+  // Use API events if available, otherwise fallback to dataStore
+  const events = (apiUrl && authStore.user?.token) ? apiEvents.value : dataStore.events
+  return events.filter(e => new Date(e.date) < new Date())
+})
 
-function addComment(eventId) {
+function getEventComments(eventId) {
+  // Use API comments if available, otherwise fallback to dataStore
+  if (apiUrl && authStore.user?.token) {
+    const event = apiEvents.value.find(e => e.id === eventId)
+    return event?.comments || []
+  }
+  return dataStore.eventComments.filter(c => c.eventId === eventId)
+}
+
+async function addComment(eventId) {
   const comment = newComment.value[eventId]?.trim()
   if (!comment) return
-  dataStore.addEventComment(eventId, comment, authStore.user?.id, authStore.user?.name)
-  newComment.value[eventId] = ''
+  
+  if (apiUrl && authStore.user?.token) {
+    try {
+      await eventsApi.addComment(eventId, comment)
+      // Reload events to get updated comments
+      const data = await eventsApi.list()
+      apiEvents.value = Array.isArray(data) ? data : []
+      newComment.value[eventId] = ''
+    } catch (e) {
+      console.error('Erreur lors de l\'ajout du commentaire:', e)
+    }
+  } else {
+    dataStore.addEventComment(eventId, comment, authStore.user?.id, authStore.user?.name)
+    newComment.value[eventId] = ''
+  }
 }
 </script>
 
@@ -54,8 +95,8 @@ function addComment(eventId) {
           <h3>{{ e.title }}</h3>
           <p>{{ e.date }} • {{ e.lieu || '—' }}</p>
           <div class="comments">
-            <div v-for="c in eventComments.filter(c => c.eventId === e.id)" :key="c.id" class="comment">
-              <strong>{{ c.userName }}</strong>: {{ c.comment }}
+            <div v-for="c in getEventComments(e.id)" :key="c.id" class="comment">
+              <strong>{{ c.user?.name || c.userName }}</strong>: {{ c.comment }}
             </div>
           </div>
           <div class="add-comment">

@@ -1,13 +1,59 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useDataStore } from '@/stores/data'
+import { useAuthStore } from '@/stores/auth'
+import { membersApi } from '@/api/client'
 
 const dataStore = useDataStore()
+const authStore = useAuthStore()
 const form = ref({ name: '', email: '', username: '', password: '' })
 const showForm = ref(false)
+const apiUrl = import.meta.env.VITE_API_URL
+const apiMembers = ref([])
+const error = ref('')
+const createdPassword = ref('')
 
-function addMember() {
+const members = computed(() =>
+  (apiUrl && authStore.user?.token) ? apiMembers.value : dataStore.members
+)
+
+onMounted(async () => {
+  if (apiUrl && authStore.user?.token) {
+    try {
+      const data = await membersApi.list()
+      apiMembers.value = Array.isArray(data) ? data : []
+    } catch (e) {
+      error.value = e.message || 'Erreur chargement'
+    }
+  }
+})
+
+async function addMember() {
   if (!form.value.name || !form.value.username) return
+  error.value = ''
+  if (apiUrl && authStore.user?.token) {
+    try {
+      const res = await membersApi.create({
+        name: form.value.name,
+        email: form.value.email || form.value.username + '@ronka.local',
+        username: form.value.username,
+        password: form.value.password || undefined,
+      })
+      createdPassword.value = res.password || ''
+      form.value = { name: '', email: '', username: '', password: '' }
+      showForm.value = false
+      const data = await membersApi.list()
+      apiMembers.value = Array.isArray(data) ? data : []
+      if (createdPassword.value) {
+        alert(`Membre créé. Mot de passe temporaire : ${createdPassword.value}\nCommuniquez-le au membre.`)
+        createdPassword.value = ''
+      }
+      return
+    } catch (e) {
+      error.value = e.message || 'Erreur lors de la création'
+      return
+    }
+  }
   const member = {
     name: form.value.name,
     email: form.value.email || form.value.username + '@ronka.com',
@@ -19,8 +65,18 @@ function addMember() {
   showForm.value = false
 }
 
-function removeMember(id) {
-  if (confirm('Supprimer ce membre ?')) dataStore.removeMember(id)
+async function removeMember(id) {
+  if (!confirm('Supprimer ce membre ?')) return
+  if (apiUrl && authStore.user?.token) {
+    try {
+      await membersApi.delete(id)
+      apiMembers.value = apiMembers.value.filter(m => m.id !== id)
+    } catch (e) {
+      error.value = e.message || 'Erreur suppression'
+    }
+    return
+  }
+  dataStore.removeMember(id)
 }
 </script>
 
@@ -62,22 +118,23 @@ function removeMember(id) {
     </div>
 
     <div class="members-list">
-      <h3>Membres du club ({{ dataStore.members.length }})</h3>
-      <div v-if="dataStore.members.length" class="table-wrap">
+      <p v-if="error" class="error-msg">{{ error }}</p>
+      <h3>Membres du club ({{ members.length }})</h3>
+      <div v-if="members.length" class="table-wrap">
         <table class="members-table">
           <thead>
             <tr>
               <th>Nom</th>
               <th>Identifiant</th>
-              <th>Mot de passe</th>
+              <th v-if="!apiUrl || !authStore.user?.token">Mot de passe</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="m in dataStore.members" :key="m.id">
+            <tr v-for="m in members" :key="m.id">
               <td>{{ m.name }}</td>
               <td>{{ m.username || m.email }}</td>
-              <td><code>{{ m.password }}</code></td>
+              <td v-if="!apiUrl || !authStore.user?.token"><code>{{ m.password }}</code></td>
               <td>
                 <button @click="removeMember(m.id)" class="btn-sm btn-danger">Supprimer</button>
               </td>
@@ -175,6 +232,7 @@ function removeMember(id) {
 .btn-danger { background: rgba(239, 68, 68, 0.3); color: #ef4444; }
 .btn-danger:hover { background: rgba(239, 68, 68, 0.5); }
 .empty { color: var(--text-muted); }
+.error-msg { background: rgba(239,68,68,0.2); color: #ef4444; padding: 0.75rem; border-radius: 6px; margin-bottom: 1rem; }
 
 @media (max-width: 640px) {
   .form-row { grid-template-columns: 1fr; }

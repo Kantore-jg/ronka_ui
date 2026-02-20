@@ -18,9 +18,25 @@ const demoAccounts = [
   { role: 'public', email: 'public@ronka.com', password: 'public123', name: 'Utilisateur Public' },
 ]
 
-function login() {
+async function login() {
   error.value = ''
   
+  const apiUser = await authStore.loginViaApi(form.value.email, form.value.password)
+  if (apiUser) {
+    error.value = ''
+    const redirect = route.query.redirect
+    if (redirect && redirect.startsWith('/')) {
+      router.push(redirect)
+    } else if (apiUser.role === 'admin') {
+      router.push({ name: 'admin-dashboard' })
+    } else if (apiUser.role === 'member') {
+      router.push({ name: 'member-dashboard' })
+    } else {
+      router.push({ name: 'public-dashboard' })
+    }
+    return
+  }
+
   const demo = demoAccounts.find(
     d => d.email === form.value.email && d.password === form.value.password
   )

@@ -1,24 +1,39 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useDataStore } from '@/stores/data'
+import { galleryApi } from '@/api/client'
 
 const dataStore = useDataStore()
 const currentIndex = ref(0)
 let intervalId = null
+const apiItems = ref([])
+const apiUrl = import.meta.env.VITE_API_URL
 
-const galleryItems = dataStore.gallery.filter(g => g.type === 'image' || g.type === 'video')
+const galleryItems = computed(() => {
+  const source = apiUrl ? apiItems.value : dataStore.gallery
+  return source.filter(g => g.type === 'image' || g.type === 'video')
+})
 
 function nextSlide() {
-  if (!galleryItems.length) return
-  currentIndex.value = (currentIndex.value + 1) % galleryItems.length
+  const n = galleryItems.value.length
+  if (!n) return
+  currentIndex.value = (currentIndex.value + 1) % n
 }
 
 function goToSlide(i) {
   currentIndex.value = i
 }
 
-onMounted(() => {
-  if (galleryItems.length) {
+onMounted(async () => {
+  if (apiUrl) {
+    try {
+      const data = await galleryApi.list()
+      apiItems.value = Array.isArray(data) ? data : []
+    } catch {
+      apiItems.value = []
+    }
+  }
+  if (galleryItems.value.length) {
     intervalId = setInterval(nextSlide, 2000)
   }
 })

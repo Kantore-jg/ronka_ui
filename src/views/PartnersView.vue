@@ -1,15 +1,46 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useDataStore } from '@/stores/data'
+import { partnersApi } from '@/api/client'
 
 const dataStore = useDataStore()
 const form = ref({ name: '', contact: '', email: '', company: '', message: '' })
 const submitted = ref(false)
+const error = ref('')
+const partnersList = ref([])
+const apiUrl = import.meta.env.VITE_API_URL
 
-const approvedPartners = computed(() => dataStore.partners.filter(p => p.status === 'approved'))
+const approvedPartners = computed(() =>
+  apiUrl && partnersList.value.length ? partnersList.value : dataStore.partners.filter(p => p.status === 'approved')
+)
 
-function submit() {
+onMounted(async () => {
+  if (apiUrl) {
+    try {
+      const data = await partnersApi.list()
+      partnersList.value = Array.isArray(data) ? data : []
+    } catch {
+      partnersList.value = []
+    }
+  }
+})
+
+async function submit() {
   if (!form.value.name || !form.value.contact) return
+  error.value = ''
+  if (apiUrl) {
+    try {
+      await partnersApi.create(form.value)
+      submitted.value = true
+      form.value = { name: '', contact: '', email: '', company: '', message: '' }
+      const data = await partnersApi.list()
+      partnersList.value = Array.isArray(data) ? data : []
+      return
+    } catch (e) {
+      error.value = e.message || 'Erreur lors de l\'envoi.'
+      return
+    }
+  }
   dataStore.addPartner(form.value)
   submitted.value = true
   form.value = { name: '', contact: '', email: '', company: '', message: '' }
@@ -34,6 +65,7 @@ function submit() {
         </div>
 
         <form v-else class="partners-form" @submit.prevent="submit">
+          <div v-if="error" class="error-msg">{{ error }}</div>
           <div class="form-group">
             <label for="name">Nom / Raison sociale *</label>
             <input id="name" v-model="form.name" type="text" required placeholder="Votre nom ou entreprise">
@@ -124,6 +156,15 @@ function submit() {
 .form-group input:focus, .form-group textarea:focus {
   outline: none;
   border-color: var(--accent);
+}
+
+.error-msg {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  padding: 0.75rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
 }
 
 .btn {

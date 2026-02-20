@@ -1,20 +1,63 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useDataStore } from '@/stores/data'
+import { useAuthStore } from '@/stores/auth'
+import { galleryApi } from '@/api/client'
 
 const dataStore = useDataStore()
+const authStore = useAuthStore()
 const form = ref({ type: 'image', url: '', title: '' })
 const showForm = ref(false)
+const apiUrl = import.meta.env.VITE_API_URL
+const hasToken = computed(() => !!authStore.user?.token)
+const apiGallery = ref([])
+const error = ref('')
 
-function addItem() {
+const gallery = computed(() => (apiUrl && hasToken.value) ? apiGallery.value : dataStore.gallery)
+
+onMounted(async () => {
+  if (!apiUrl || !hasToken.value) return
+  try {
+    const data = await galleryApi.list()
+    apiGallery.value = Array.isArray(data) ? data : []
+  } catch (e) {
+    error.value = e.message || 'Erreur chargement'
+  }
+})
+
+async function addItem() {
   if (!form.value.url) return
+  error.value = ''
+  if (apiUrl && hasToken.value) {
+    try {
+      await galleryApi.create(form.value)
+      form.value = { type: 'image', url: '', title: '' }
+      showForm.value = false
+      const data = await galleryApi.list()
+      apiGallery.value = Array.isArray(data) ? data : []
+      return
+    } catch (e) {
+      error.value = e.message || 'Erreur ajout'
+      return
+    }
+  }
   dataStore.addGalleryItem(form.value)
   form.value = { type: 'image', url: '', title: '' }
   showForm.value = false
 }
 
-function removeItem(id) {
-  if (confirm('Supprimer cet élément de la galerie ?')) dataStore.removeGalleryItem(id)
+async function removeItem(id) {
+  if (!confirm('Supprimer cet élément de la galerie ?')) return
+  if (apiUrl && hasToken.value) {
+    try {
+      await galleryApi.delete(id)
+      apiGallery.value = apiGallery.value.filter(g => g.id !== id)
+    } catch (e) {
+      error.value = e.message || 'Erreur suppression'
+    }
+    return
+  }
+  dataStore.removeGalleryItem(id)
 }
 </script>
 
@@ -22,6 +65,7 @@ function removeItem(id) {
   <div class="admin-gallery">
     <div class="header">
       <h1>Galerie du site</h1>
+      <p v-if="error" class="error-msg">{{ error }}</p>
       <button @click="showForm = !showForm" class="btn btn-primary">
         {{ showForm ? 'Annuler' : '+ Ajouter image/vidéo' }}
       </button>
@@ -51,9 +95,9 @@ function removeItem(id) {
     </div>
 
     <div class="gallery-list">
-      <h3>Éléments de la galerie ({{ dataStore.gallery.length }})</h3>
+      <h3>Éléments de la galerie ({{ gallery.length }})</h3>
       <div class="gallery-grid">
-        <div v-for="item in dataStore.gallery" :key="item.id" class="gallery-item">
+        <div v-for="item in gallery" :key="item.id" class="gallery-item">
           <div class="preview">
             <img v-if="item.type === 'image'" :src="item.url" :alt="item.title" @error="$event.target.src='/logo.png'">
             <video v-else :src="item.url" muted preload="metadata"></video>
@@ -63,7 +107,7 @@ function removeItem(id) {
           <button @click="removeItem(item.id)" class="btn btn-sm btn-danger">Supprimer</button>
         </div>
       </div>
-      <p v-if="!dataStore.gallery.length" class="empty">Aucun élément. Ajoutez des images ou vidéos.</p>
+      <p v-if="!gallery.length" class="empty">Aucun élément. Ajoutez des images ou vidéos.</p>
     </div>
   </div>
 </template>
@@ -169,4 +213,5 @@ function removeItem(id) {
 .btn-danger { background: rgba(239, 68, 68, 0.3); color: #ef4444; margin: 0 1rem 1rem; width: calc(100% - 2rem); }
 .btn-danger:hover { background: rgba(239, 68, 68, 0.5); }
 .empty { color: var(--text-muted); }
+.error-msg { background: rgba(239,68,68,0.2); color: #ef4444; padding: 0.75rem; border-radius: 6px; margin-bottom: 1rem; }
 </style>

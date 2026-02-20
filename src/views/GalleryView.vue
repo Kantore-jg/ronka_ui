@@ -1,8 +1,27 @@
 <script setup>
+import { ref, computed, onMounted } from 'vue'
 import { useDataStore } from '@/stores/data'
+import { galleryApi } from '@/api/client'
 
 const dataStore = useDataStore()
-const galleryItems = dataStore.gallery.filter(g => g.type === 'image' || g.type === 'video')
+const apiItems = ref([])
+const apiUrl = import.meta.env.VITE_API_URL
+
+const galleryItems = computed(() => {
+  if (apiUrl && apiItems.value.length) return apiItems.value
+  return dataStore.gallery.filter(g => g.type === 'image' || g.type === 'video')
+})
+
+onMounted(async () => {
+  if (apiUrl) {
+    try {
+      const data = await galleryApi.list()
+      apiItems.value = Array.isArray(data) ? data : []
+    } catch {
+      apiItems.value = []
+    }
+  }
+})
 </script>
 
 <template>

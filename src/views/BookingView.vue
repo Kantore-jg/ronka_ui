@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useDataStore } from '@/stores/data'
+import { bookingsApi } from '@/api/client'
 
 const dataStore = useDataStore()
 const form = ref({
@@ -12,6 +13,8 @@ const form = ref({
   description: ''
 })
 const submitted = ref(false)
+const error = ref('')
+const apiUrl = import.meta.env.VITE_API_URL
 
 const eventTypes = [
   'Cérémonie (mariage, funérailles...)',
@@ -20,8 +23,20 @@ const eventTypes = [
   'Autre'
 ]
 
-function submit() {
+async function submit() {
   if (!form.value.name || !form.value.contact || !form.value.eventType || !form.value.date || !form.value.lieu) return
+  error.value = ''
+  if (apiUrl) {
+    try {
+      await bookingsApi.create(form.value)
+      submitted.value = true
+      form.value = { name: '', contact: '', eventType: '', date: '', lieu: '', description: '' }
+      return
+    } catch (e) {
+      error.value = e.message || 'Erreur lors de l\'envoi.'
+      return
+    }
+  }
   dataStore.addBooking(form.value)
   submitted.value = true
   form.value = { name: '', contact: '', eventType: '', date: '', lieu: '', description: '' }
@@ -46,6 +61,7 @@ function submit() {
         </div>
 
         <form v-else class="booking-form" @submit.prevent="submit">
+          <div v-if="error" class="error-msg">{{ error }}</div>
           <div class="form-group">
             <label for="name">Nom complet *</label>
             <input id="name" v-model="form.name" type="text" required placeholder="Votre nom">
@@ -160,6 +176,15 @@ function submit() {
 }
 
 .btn-primary:hover { opacity: 0.95; }
+
+.error-msg {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  padding: 0.75rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
 
 .success-message {
   text-align: center;

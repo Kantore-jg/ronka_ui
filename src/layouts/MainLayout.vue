@@ -75,14 +75,14 @@ function getDashboardLink() {
           <span class="logo-sub">Event Multi Service</span>
           <p>30-50 jeunes au service de vos événements</p>
         </div>
-        <div class="footer-links">
+        <!-- <div class="footer-links">
           <router-link to="/services">Services</router-link>
           <router-link to="/booking">Réserver</router-link>
           <router-link to="/donate">Don</router-link>
           <router-link to="/partenaires">Partenaires</router-link>
           <router-link to="/galerie">Galerie</router-link>
           <router-link to="/feedback">Feedback</router-link>
-        </div>
+        </div> -->
         <div class="footer-social">
           <a href="https://www.instagram.com/ronka_multiservices/" target="_blank" rel="noopener" aria-label="Instagram">
             <i class="pi pi-instagram"></i> Instagram

@@ -28,8 +28,8 @@ const sidebarLinks = computed(() => {
   ]
 })
 
-function logout() {
-  authStore.logout()
+async function logout() {
+  await authStore.logoutViaApi()
   window.location.href = '/'
 }
 </script>
