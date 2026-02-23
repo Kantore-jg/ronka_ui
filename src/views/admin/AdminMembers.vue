@@ -6,12 +6,13 @@ import { membersApi } from '@/api/client'
 
 const dataStore = useDataStore()
 const authStore = useAuthStore()
-const form = ref({ name: '', email: '', username: '', password: '' })
+const form = ref({ name: '', email: '' })
 const showForm = ref(false)
 const apiUrl = import.meta.env.VITE_API_URL
 const apiMembers = ref([])
 const error = ref('')
-const createdPassword = ref('')
+const successMsg = ref('')
+const loading = ref(false)
 
 const members = computed(() =>
   (apiUrl && authStore.user?.token) ? apiMembers.value : dataStore.members
@@ -29,44 +30,42 @@ onMounted(async () => {
 })
 
 async function addMember() {
-  if (!form.value.name || !form.value.username) return
+  if (!form.value.name || !form.value.email) return
   error.value = ''
+  successMsg.value = ''
+  loading.value = true
   if (apiUrl && authStore.user?.token) {
     try {
       const res = await membersApi.create({
         name: form.value.name,
-        email: form.value.email || form.value.username + '@ronka.local',
-        username: form.value.username,
-        password: form.value.password || undefined,
+        email: form.value.email,
       })
-      createdPassword.value = res.password || ''
-      form.value = { name: '', email: '', username: '', password: '' }
+      form.value = { name: '', email: '' }
       showForm.value = false
       const data = await membersApi.list()
       apiMembers.value = Array.isArray(data) ? data : []
-      if (createdPassword.value) {
-        alert(`Membre créé. Mot de passe temporaire : ${createdPassword.value}\nCommuniquez-le au membre.`)
-        createdPassword.value = ''
-      }
-      return
+      successMsg.value = `Membre créé avec le code ${res.code || res.member?.username}. Un email avec les identifiants a été envoyé à ${res.member?.email}.`
     } catch (e) {
       error.value = e.message || 'Erreur lors de la création'
-      return
+    } finally {
+      loading.value = false
     }
+    return
   }
   const member = {
     name: form.value.name,
-    email: form.value.email || form.value.username + '@ronka.com',
-    username: form.value.username,
-    password: form.value.password || 'ronka' + Date.now().toString().slice(-4)
+    email: form.value.email,
+    username: 'Ronka-' + new Date().getFullYear() + '-' + String(dataStore.members.length + 1).padStart(4, '0'),
   }
   dataStore.addMember(member)
-  form.value = { name: '', email: '', username: '', password: '' }
+  form.value = { name: '', email: '' }
   showForm.value = false
+  loading.value = false
 }
 
 async function removeMember(id) {
   if (!confirm('Supprimer ce membre ?')) return
+  successMsg.value = ''
   if (apiUrl && authStore.user?.token) {
     try {
       await membersApi.delete(id)
@@ -89,9 +88,11 @@ async function removeMember(id) {
       </button>
     </div>
 
+    <div v-if="successMsg" class="success-msg">{{ successMsg }}</div>
+
     <div v-if="showForm" class="add-form">
       <h3>Nouveau membre</h3>
-      <p class="hint">L'admin crée le compte. Le membre reçoit ses identifiants (username + password).</p>
+      <p class="hint">Saisissez le nom et l'email du membre. Un code unique sera généré automatiquement (ex: Ronka-2026-0001) et un email avec les identifiants de connexion sera envoyé au membre.</p>
       <form @submit.prevent="addMember">
         <div class="form-row">
           <div class="form-group">
@@ -99,21 +100,13 @@ async function removeMember(id) {
             <input v-model="form.name" type="text" required placeholder="Jean Dupont">
           </div>
           <div class="form-group">
-            <label>Username (identifiant) *</label>
-            <input v-model="form.username" type="text" required placeholder="jean.dupont">
+            <label>Email *</label>
+            <input v-model="form.email" type="email" required placeholder="jean@email.com">
           </div>
         </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Email</label>
-            <input v-model="form.email" type="email" placeholder="jean@email.com">
-          </div>
-          <div class="form-group">
-            <label>Mot de passe (optionnel, généré si vide)</label>
-            <input v-model="form.password" type="text" placeholder="ronka1234">
-          </div>
-        </div>
-        <button type="submit" class="btn btn-primary">Créer le compte membre</button>
+        <button type="submit" class="btn btn-primary" :disabled="loading">
+          {{ loading ? 'Création en cours...' : 'Créer le compte membre' }}
+        </button>
       </form>
     </div>
 
@@ -125,16 +118,16 @@ async function removeMember(id) {
           <thead>
             <tr>
               <th>Nom</th>
-              <th>Identifiant</th>
-              <th v-if="!apiUrl || !authStore.user?.token">Mot de passe</th>
+              <th>Code membre</th>
+              <th>Email</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="m in members" :key="m.id">
               <td>{{ m.name }}</td>
-              <td>{{ m.username || m.email }}</td>
-              <td v-if="!apiUrl || !authStore.user?.token"><code>{{ m.password }}</code></td>
+              <td><code>{{ m.username }}</code></td>
+              <td>{{ m.email }}</td>
               <td>
                 <button @click="removeMember(m.id)" class="btn-sm btn-danger">Supprimer</button>
               </td>
@@ -233,6 +226,7 @@ async function removeMember(id) {
 .btn-danger:hover { background: rgba(239, 68, 68, 0.5); }
 .empty { color: var(--text-muted); }
 .error-msg { background: rgba(239,68,68,0.2); color: #ef4444; padding: 0.75rem; border-radius: 6px; margin-bottom: 1rem; }
+.success-msg { background: rgba(34,197,94,0.15); color: #22c55e; padding: 0.75rem; border-radius: 6px; margin-bottom: 1rem; font-size: 0.9rem; }
 
 @media (max-width: 640px) {
   .form-row { grid-template-columns: 1fr; }

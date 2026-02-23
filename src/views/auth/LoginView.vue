@@ -82,8 +82,8 @@ async function login() {
     <form @submit.prevent="login" class="auth-form">
       <div v-if="error" class="error-msg">{{ error }}</div>
       <div class="form-group">
-        <label for="email">Email / Identifiant</label>
-        <input id="email" v-model="form.email" type="text" required placeholder="admin@ronka.com">
+        <label for="email">Email / Code membre</label>
+        <input id="email" v-model="form.email" type="text" required placeholder="email ou Ronka-2026-0001">
       </div>
       <div class="form-group">
         <label for="password">Mot de passe</label>
@@ -92,7 +92,7 @@ async function login() {
       <button type="submit" class="btn btn-primary">Se connecter</button>
     </form>
     <p class="demo-info">
-      Comptes démo : admin@ronka.com / admin123 • membre@ronka.com / membre123 • public@ronka.com / public123
+      Membres : connectez-vous avec votre code membre (ex: Ronka-2026-0001) et le mot de passe reçu par email.
     </p>
     <p class="auth-link">
       Pas de compte ? <router-link to="/auth/register">Créer un compte public</router-link>
