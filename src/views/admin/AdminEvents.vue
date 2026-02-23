@@ -2,7 +2,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useDataStore } from '@/stores/data'
 import { useAuthStore } from '@/stores/auth'
-import { eventsApi, membersApi, feedbackApi, partnersApi } from '@/api/client'
+import { eventsApi, membersApi, partnersApi } from '@/api/client'
 
 const dataStore = useDataStore()
 const authStore = useAuthStore()
@@ -16,14 +16,11 @@ const hasToken = computed(() => !!authStore.user?.token)
 
 const apiEvents = ref([])
 const apiMembers = ref([])
-const apiFeedbacks = ref([])
 const apiPartners = ref([])
 const error = ref('')
 
 const events = computed(() => (apiUrl && hasToken.value) ? apiEvents.value : dataStore.events)
 const members = computed(() => (apiUrl && hasToken.value) ? apiMembers.value : dataStore.members)
-const feedbacks = computed(() => (apiUrl && hasToken.value) ? apiFeedbacks.value.filter(f => f.type === 'feedback') : dataStore.feedbacks)
-const suggestions = computed(() => (apiUrl && hasToken.value) ? apiFeedbacks.value.filter(f => f.type === 'suggestion') : dataStore.suggestions)
 const partnersPending = computed(() => (apiUrl && hasToken.value) ? apiPartners.value.filter(p => p.status === 'pending') : dataStore.partners.filter(p => p.status === 'pending'))
 
 function getAssignedMembers(event) {
@@ -35,15 +32,13 @@ function getAssignedMembers(event) {
 onMounted(async () => {
   if (!apiUrl || !hasToken.value) return
   try {
-    const [ev, mem, fb, pt] = await Promise.all([
+    const [ev, mem, pt] = await Promise.all([
       eventsApi.list(),
       membersApi.list(),
-      feedbackApi.list(),
       partnersApi.list(),
     ])
     apiEvents.value = Array.isArray(ev) ? ev : []
     apiMembers.value = Array.isArray(mem) ? mem : []
-    apiFeedbacks.value = Array.isArray(fb) ? fb : []
     apiPartners.value = Array.isArray(pt) ? pt : []
   } catch (e) {
     error.value = e.message || 'Erreur chargement'
@@ -199,22 +194,6 @@ async function approvePartner(id) {
     </div>
 
     <div class="admin-panels">
-      <div class="panel">
-        <h3>Feedbacks</h3>
-        <div v-for="f in feedbacks" :key="f.id" class="item">
-          <p>{{ f.message }}</p>
-          <small>{{ f.name || 'Anonyme' }} • {{ f.contact || '' }}</small>
-        </div>
-        <p v-if="!feedbacks.length" class="empty">Aucun feedback</p>
-      </div>
-      <div class="panel">
-        <h3>Suggestions</h3>
-        <div v-for="s in suggestions" :key="s.id" class="item">
-          <p>{{ s.message }}</p>
-          <small>{{ s.name || 'Anonyme' }}</small>
-        </div>
-        <p v-if="!suggestions.length" class="empty">Aucune suggestion</p>
-      </div>
       <div class="panel">
         <h3>Partenaires (en attente)</h3>
         <div v-for="p in partnersPending" :key="p.id" class="item">

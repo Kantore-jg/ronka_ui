@@ -102,11 +102,6 @@ export const partnersApi = {
   approve: (id) => api.post(`/partners/${id}/approve`),
 }
 
-export const feedbackApi = {
-  list: () => api.get('/feedbacks'),
-  create: (data) => api.post('/feedback', toSnake(data), !!getToken()),
-}
-
 export const membersApi = {
   list: () => api.get('/members'),
   create: (data) => api.post('/members', data),
@@ -120,8 +115,23 @@ export const eventsApi = {
   addComment: (eventId, comment) => api.post(`/events/${eventId}/comment`, { comment }),
 }
 
+async function uploadFormData(path, formData, auth = true) {
+  if (!API_BASE) throw new Error('API non configurée')
+  const headers = { ...getHeaders(auth) }
+  delete headers['Content-Type']
+  const res = await fetch(`${API_BASE}${path}`, {
+    method: 'POST',
+    headers,
+    body: formData,
+  })
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok) throw new Error(parseErrorMessage(data, res.status))
+  return data
+}
+
 export const galleryApi = {
   list: () => api.get('/gallery', false),
   create: (data) => api.post('/gallery', toSnake(data)),
+  uploadImage: (formData) => uploadFormData('/gallery', formData),
   delete: (id) => api.delete(`/gallery/${id}`),
 }

@@ -6,7 +6,7 @@ import { galleryApi } from '@/api/client'
 
 const dataStore = useDataStore()
 const authStore = useAuthStore()
-const form = ref({ type: 'image', url: '', title: '' })
+const form = ref({ type: 'image', file: null, url: '', title: '' })
 const showForm = ref(false)
 const apiUrl = import.meta.env.VITE_API_URL
 const hasToken = computed(() => !!authStore.user?.token)
@@ -26,12 +26,28 @@ onMounted(async () => {
 })
 
 async function addItem() {
-  if (!form.value.url) return
+  const isImage = form.value.type === 'image'
+  if (isImage && !form.value.file) {
+    error.value = 'Sélectionnez une image.'
+    return
+  }
+  if (!isImage && !form.value.url) {
+    error.value = 'Indiquez l\'URL de la vidéo.'
+    return
+  }
   error.value = ''
   if (apiUrl && hasToken.value) {
     try {
-      await galleryApi.create(form.value)
-      form.value = { type: 'image', url: '', title: '' }
+      if (isImage) {
+        const fd = new FormData()
+        fd.append('type', 'image')
+        fd.append('image', form.value.file)
+        if (form.value.title) fd.append('title', form.value.title)
+        await galleryApi.uploadImage(fd)
+      } else {
+        await galleryApi.create({ type: 'video', url: form.value.url, title: form.value.title })
+      }
+      form.value = { type: 'image', file: null, url: '', title: '' }
       showForm.value = false
       const data = await galleryApi.list()
       apiGallery.value = Array.isArray(data) ? data : []
@@ -41,8 +57,13 @@ async function addItem() {
       return
     }
   }
-  dataStore.addGalleryItem(form.value)
-  form.value = { type: 'image', url: '', title: '' }
+  if (isImage && form.value.file) {
+    const url = URL.createObjectURL(form.value.file)
+    dataStore.addGalleryItem({ type: 'image', url, title: form.value.title })
+  } else {
+    dataStore.addGalleryItem(form.value)
+  }
+  form.value = { type: 'image', file: null, url: '', title: '' }
   showForm.value = false
 }
 
@@ -73,7 +94,6 @@ async function removeItem(id) {
 
     <div v-if="showForm" class="add-form">
       <h3>Nouvelle image ou vidéo</h3>
-      <p class="hint">Collez l'URL d'une image (Instagram, Unsplash, etc.) ou d'une vidéo.</p>
       <form @submit.prevent="addItem">
         <div class="form-group">
           <label>Type</label>
@@ -82,9 +102,18 @@ async function removeItem(id) {
             <option value="video">Vidéo</option>
           </select>
         </div>
-        <div class="form-group">
-          <label>URL *</label>
-          <input v-model="form.url" type="url" required placeholder="https://...">
+        <div v-if="form.type === 'image'" class="form-group">
+          <label>Image *</label>
+          <input
+            type="file"
+            accept="image/jpeg,image/png,image/jpg,image/gif,image/webp"
+            @change="form.file = $event.target.files?.[0]"
+          >
+          <p class="hint">JPEG, PNG, GIF ou WebP. Max 5 Mo.</p>
+        </div>
+        <div v-else class="form-group">
+          <label>URL de la vidéo *</label>
+          <input v-model="form.url" type="url" placeholder="https://...">
         </div>
         <div class="form-group">
           <label>Titre / Description</label>

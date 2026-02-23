@@ -48,7 +48,7 @@ onUnmounted(() => {
     <section class="hero">
       <div class="hero-content">
         <h1>RONKA Event Multi Service</h1>
-        <p class="hero-tagline">30-50 jeunes au service de vos moments inoubliables</p>
+        <p class="hero-tagline"> jeunes au service de vos moments inoubliables</p>
         <p class="hero-desc">Cérémonies, événements, fêtes — nous fournissons serveurs et organisation pour faire de chaque occasion un succès.</p>
         <div class="hero-actions">
           <router-link to="/booking" class="btn btn-primary">Réserver un événement</router-link>
@@ -133,7 +133,7 @@ onUnmounted(() => {
 
     <section class="cta">
       <div class="container">
-        <h2>Prêt à organiser votre événement ?</h2>
+        <h2>Prêt à organiser votre événement !!</h2>
         <div class="cta-buttons">
           <router-link to="/booking" class="btn btn-primary">Réserver</router-link>
           <router-link to="/auth/login" class="btn btn-outline">Se connecter</router-link>

@@ -2,7 +2,7 @@
 import { computed, ref, onMounted } from 'vue'
 import { useDataStore } from '@/stores/data'
 import { useAuthStore } from '@/stores/auth'
-import { bookingsApi, donationsApi, partnersApi, feedbackApi, membersApi, eventsApi } from '@/api/client'
+import { bookingsApi, donationsApi, partnersApi, membersApi, eventsApi } from '@/api/client'
 
 const dataStore = useDataStore()
 const authStore = useAuthStore()
@@ -12,7 +12,6 @@ const hasToken = computed(() => !!authStore.user?.token)
 const bookings = ref([])
 const donations = ref([])
 const partners = ref([])
-const feedbacks = ref([])
 const members = ref([])
 const events = ref([])
 const loading = ref(true)
@@ -20,15 +19,11 @@ const error = ref('')
 
 const stats = computed(() => {
   if (apiUrl && hasToken.value) {
-    const feedAll = feedbacks.value || []
-    const feedAndSugg = feedAll.filter(f => f.type === 'feedback').length + feedAll.filter(f => f.type === 'suggestion').length
     return {
       bookings: (bookings.value || []).length,
       donations: (donations.value || []).length,
       partners: (partners.value || []).filter(p => p.status === 'approved').length,
       partnersPending: (partners.value || []).filter(p => p.status === 'pending').length,
-      feedbacks: feedAndSugg,
-      suggestions: 0,
       members: (members.value || []).length,
       events: (events.value || []).length,
     }
@@ -38,8 +33,6 @@ const stats = computed(() => {
     donations: dataStore.donations.length,
     partners: dataStore.partners.filter(p => p.status === 'approved').length,
     partnersPending: dataStore.partners.filter(p => p.status === 'pending').length,
-    feedbacks: dataStore.feedbacks.length,
-    suggestions: dataStore.suggestions.length,
     members: dataStore.members.length,
     events: dataStore.events.length,
   }
@@ -60,18 +53,16 @@ onMounted(async () => {
     return
   }
   try {
-    const [b, d, p, f, m, e] = await Promise.all([
+    const [b, d, p, m, e] = await Promise.all([
       bookingsApi.list(),
       donationsApi.list(),
       partnersApi.list(),
-      feedbackApi.list(),
       membersApi.list(),
       eventsApi.list(),
     ])
     bookings.value = Array.isArray(b) ? b : []
     donations.value = Array.isArray(d) ? d : []
     partners.value = Array.isArray(p) ? p : []
-    feedbacks.value = Array.isArray(f) ? f : []
     members.value = Array.isArray(m) ? m : []
     events.value = Array.isArray(e) ? e : []
   } catch (err) {
@@ -104,10 +95,6 @@ onMounted(async () => {
       <div class="stat-card warning" v-if="stats.partnersPending">
         <span class="stat-value">{{ stats.partnersPending }}</span>
         <span class="stat-label">Partenaires en attente</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-value">{{ stats.feedbacks + stats.suggestions }}</span>
-        <span class="stat-label">Feedbacks & Suggestions</span>
       </div>
       <div class="stat-card">
         <span class="stat-value">{{ stats.members }}</span>

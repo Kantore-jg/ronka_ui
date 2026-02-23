@@ -33,7 +33,7 @@ function register() {
 <template>
   <div class="auth-card">
     <h2>Créer un compte</h2>
-    <p class="subtitle">Compte public : booking, donate, partenariat, feedback</p>
+    <p class="subtitle">Compte public : booking, donate, partenariat</p>
     <form @submit.prevent="register" class="auth-form">
       <div v-if="error" class="error-msg">{{ error }}</div>
       <div class="form-group">

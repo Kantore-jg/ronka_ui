@@ -5,8 +5,6 @@ export const useDataStore = defineStore('data', () => {
   const bookings = ref([])
   const donations = ref([])
   const partners = ref([])
-  const feedbacks = ref([])
-  const suggestions = ref([])
   const members = ref([
     { id: 'demo-member', name: 'Membre Test', email: 'membre@ronka.com', username: 'membre@ronka.com', password: 'membre123' }
   ])
@@ -31,14 +29,6 @@ export const useDataStore = defineStore('data', () => {
   
   function addPartner(partner) {
     partners.value.push({ ...partner, id: Date.now(), status: 'pending', createdAt: new Date().toISOString() })
-  }
-  
-  function addFeedback(feedback) {
-    feedbacks.value.push({ ...feedback, id: Date.now(), createdAt: new Date().toISOString() })
-  }
-  
-  function addSuggestion(suggestion) {
-    suggestions.value.push({ ...suggestion, id: Date.now(), createdAt: new Date().toISOString() })
   }
   
   function addMember(member) {
@@ -76,9 +66,9 @@ export const useDataStore = defineStore('data', () => {
   }
   
   return {
-    bookings, donations, partners, feedbacks, suggestions, members, events,
+    bookings, donations, partners, members, events,
     eventAssignments, eventComments, gallery,
-    addBooking, addDonation, addPartner, addFeedback, addSuggestion,
+    addBooking, addDonation, addPartner,
     addMember, removeMember, addEvent, assignMemberToEvent, addEventComment, approvePartner,
     addGalleryItem, removeGalleryItem
   }

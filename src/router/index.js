@@ -16,7 +16,6 @@ const router = createRouter({
         { path: 'booking', name: 'booking', component: () => import('@/views/BookingView.vue'), meta: { title: 'Réserver' } },
         { path: 'donate', name: 'donate', component: () => import('@/views/DonateView.vue'), meta: { title: 'Faire un Don' } },
         { path: 'partenaires', name: 'partenaires', component: () => import('@/views/PartnersView.vue'), meta: { title: 'Partenaires' } },
-        { path: 'feedback', name: 'feedback', component: () => import('@/views/FeedbackView.vue'), meta: { title: 'Feedback & Suggestions' } },
         { path: 'galerie', name: 'galerie', component: () => import('@/views/GalleryView.vue'), meta: { title: 'Galerie' } },
       ]
     },

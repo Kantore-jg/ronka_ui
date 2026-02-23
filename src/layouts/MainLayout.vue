@@ -15,7 +15,6 @@ const navLinks = computed(() => [
   { name: 'Réserver', to: '/booking' },
   { name: 'Don', to: '/donate' },
   { name: 'Partenaires', to: '/partenaires' },
-  { name: 'Feedback', to: '/feedback' },
 ])
 
 function getDashboardLink() {
@@ -73,7 +72,7 @@ function getDashboardLink() {
           <img src="/logo.png" alt="RONKA" class="footer-logo">
           <span class="logo-text">RONKA</span>
           <span class="logo-sub">Event Multi Service</span>
-          <p>30-50 jeunes au service de vos événements</p>
+          <p> jeunes au service de vos événements</p>
         </div>
         <!-- <div class="footer-links">
           <router-link to="/services">Services</router-link>
