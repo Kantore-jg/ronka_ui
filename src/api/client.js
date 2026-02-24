@@ -106,6 +106,7 @@ export const membersApi = {
   list: () => api.get('/members'),
   create: (data) => api.post('/members', data),
   delete: (id) => api.delete(`/members/${id}`),
+  assignments: (memberId) => api.get(`/members/${memberId}/assignments`),
 }
 
 export const eventsApi = {
@@ -113,6 +114,9 @@ export const eventsApi = {
   create: (data) => api.post('/events', toSnake(data)),
   assignMember: (eventId, memberId) => api.post(`/events/${eventId}/assign`, { member_id: memberId }),
   addComment: (eventId, comment) => api.post(`/events/${eventId}/comment`, { comment }),
+  confirmAssignment: (assignmentId, status) => api.post(`/events/assignments/${assignmentId}/confirm`, { status }),
+  getConfirmations: (eventId) => api.get(`/events/${eventId}/confirmations`),
+  myAssignments: () => api.get('/my-assignments'),
 }
 
 async function uploadFormData(path, formData, auth = true) {

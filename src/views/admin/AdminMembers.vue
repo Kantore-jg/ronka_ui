@@ -13,6 +13,9 @@ const apiMembers = ref([])
 const error = ref('')
 const successMsg = ref('')
 const loading = ref(false)
+const expandedMemberId = ref(null)
+const memberAssignments = ref({})
+const loadingAssignments = ref(false)
 
 const members = computed(() =>
   (apiUrl && authStore.user?.token) ? apiMembers.value : dataStore.members
@@ -28,6 +31,43 @@ onMounted(async () => {
     }
   }
 })
+
+async function toggleMemberDetail(memberId) {
+  if (expandedMemberId.value === memberId) {
+    expandedMemberId.value = null
+    return
+  }
+  expandedMemberId.value = memberId
+  if (memberAssignments.value[memberId]) return
+  if (apiUrl && authStore.user?.token) {
+    loadingAssignments.value = true
+    try {
+      const data = await membersApi.assignments(memberId)
+      memberAssignments.value[memberId] = Array.isArray(data) ? data : []
+    } catch (e) {
+      memberAssignments.value[memberId] = []
+    } finally {
+      loadingAssignments.value = false
+    }
+  }
+}
+
+function getStatusLabel(status) {
+  if (status === 'confirmed') return 'Confirmé'
+  if (status === 'declined') return 'Décliné'
+  return 'En attente'
+}
+
+function getStatusClass(status) {
+  if (status === 'confirmed') return 'status-confirmed'
+  if (status === 'declined') return 'status-declined'
+  return 'status-pending'
+}
+
+function formatDate(d) {
+  if (!d) return '—'
+  return new Date(d).toLocaleDateString('fr-FR')
+}
 
 async function addMember() {
   if (!form.value.name || !form.value.email) return
@@ -70,6 +110,7 @@ async function removeMember(id) {
     try {
       await membersApi.delete(id)
       apiMembers.value = apiMembers.value.filter(m => m.id !== id)
+      if (expandedMemberId.value === id) expandedMemberId.value = null
     } catch (e) {
       error.value = e.message || 'Erreur suppression'
     }
@@ -117,6 +158,7 @@ async function removeMember(id) {
         <table class="members-table">
           <thead>
             <tr>
+              <th></th>
               <th>Nom</th>
               <th>Code membre</th>
               <th>Email</th>
@@ -124,14 +166,54 @@ async function removeMember(id) {
             </tr>
           </thead>
           <tbody>
-            <tr v-for="m in members" :key="m.id">
-              <td>{{ m.name }}</td>
-              <td><code>{{ m.username }}</code></td>
-              <td>{{ m.email }}</td>
-              <td>
-                <button @click="removeMember(m.id)" class="btn-sm btn-danger">Supprimer</button>
-              </td>
-            </tr>
+            <template v-for="m in members" :key="m.id">
+              <tr :class="{ 'row-expanded': expandedMemberId === m.id }">
+                <td>
+                  <button @click="toggleMemberDetail(m.id)" class="btn-expand" :title="expandedMemberId === m.id ? 'Masquer' : 'Voir les événements'">
+                    <i :class="expandedMemberId === m.id ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                  </button>
+                </td>
+                <td>{{ m.name }}</td>
+                <td><code>{{ m.username }}</code></td>
+                <td>{{ m.email }}</td>
+                <td>
+                  <button @click="removeMember(m.id)" class="btn-icon btn-danger" title="Supprimer">
+                    <i class="pi pi-trash"></i>
+                  </button>
+                </td>
+              </tr>
+              <tr v-if="expandedMemberId === m.id" class="detail-row">
+                <td colspan="5">
+                  <div class="assignments-panel">
+                    <h4><i class="pi pi-calendar"></i> Événements assignés</h4>
+                    <div v-if="loadingAssignments" class="loading-text">
+                      <i class="pi pi-spin pi-spinner"></i> Chargement...
+                    </div>
+                    <div v-else-if="memberAssignments[m.id]?.length" class="assignments-list">
+                      <div v-for="a in memberAssignments[m.id]" :key="a.id" class="assignment-item">
+                        <div class="assignment-info">
+                          <strong>{{ a.event?.title || 'Événement supprimé' }}</strong>
+                          <span class="assignment-meta">
+                            {{ formatDate(a.event?.date) }}
+                            <template v-if="a.event?.lieu"> • {{ a.event.lieu }}</template>
+                          </span>
+                        </div>
+                        <div class="assignment-status">
+                          <span class="status-badge" :class="getStatusClass(a.status)">
+                            <i :class="a.status === 'confirmed' ? 'pi pi-check' : a.status === 'declined' ? 'pi pi-times' : 'pi pi-clock'"></i>
+                            {{ getStatusLabel(a.status) }}
+                          </span>
+                          <span v-if="a.confirmed_at" class="confirmed-date">
+                            {{ formatDate(a.confirmed_at) }}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <p v-else class="empty-assignments">Aucun événement assigné.</p>
+                  </div>
+                </td>
+              </tr>
+            </template>
           </tbody>
         </table>
       </div>
@@ -204,12 +286,117 @@ async function removeMember(id) {
   font-size: 0.9rem;
 }
 
+.members-table th:first-child { width: 40px; }
+
 .members-table code {
   background: var(--input-bg);
   padding: 0.2rem 0.5rem;
   border-radius: 4px;
   font-size: 0.85rem;
 }
+
+.row-expanded { background: rgba(212, 175, 55, 0.05); }
+
+.btn-expand {
+  background: transparent;
+  border: none;
+  color: var(--accent);
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.btn-expand:hover { background: rgba(212, 175, 55, 0.15); }
+
+.btn-icon {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.4rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  transition: all 0.2s;
+}
+
+.btn-danger { color: #ef4444; }
+.btn-danger:hover { background: rgba(239, 68, 68, 0.2); }
+
+.detail-row td {
+  padding: 0 !important;
+  border-bottom: 2px solid var(--border);
+}
+
+.assignments-panel {
+  padding: 1rem 1.5rem 1.25rem;
+  background: rgba(212, 175, 55, 0.03);
+}
+
+.assignments-panel h4 {
+  font-size: 0.9rem;
+  color: var(--accent);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.loading-text {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.assignments-list { display: flex; flex-direction: column; gap: 0.5rem; }
+
+.assignment-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.65rem 0.85rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.assignment-info { display: flex; flex-direction: column; gap: 0.15rem; }
+.assignment-info strong { font-size: 0.9rem; color: var(--text-primary); }
+.assignment-meta { font-size: 0.8rem; color: var(--text-muted); }
+
+.assignment-status { display: flex; align-items: center; gap: 0.75rem; }
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.65rem;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.status-confirmed { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+.status-declined { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+.status-pending { background: rgba(234, 179, 8, 0.15); color: #eab308; }
+
+.confirmed-date { font-size: 0.75rem; color: var(--text-muted); }
+
+.empty-assignments { color: var(--text-muted); font-size: 0.85rem; margin: 0; }
 
 .btn {
   padding: 0.6rem 1.25rem;
@@ -221,14 +408,12 @@ async function removeMember(id) {
 }
 
 .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent-hover)); color: var(--btn-primary-text); }
-.btn-sm { padding: 0.4rem 0.75rem; font-size: 0.8rem; }
-.btn-danger { background: rgba(239, 68, 68, 0.3); color: #ef4444; }
-.btn-danger:hover { background: rgba(239, 68, 68, 0.5); }
 .empty { color: var(--text-muted); }
 .error-msg { background: rgba(239,68,68,0.2); color: #ef4444; padding: 0.75rem; border-radius: 6px; margin-bottom: 1rem; }
 .success-msg { background: rgba(34,197,94,0.15); color: #22c55e; padding: 0.75rem; border-radius: 6px; margin-bottom: 1rem; font-size: 0.9rem; }
 
 @media (max-width: 640px) {
   .form-row { grid-template-columns: 1fr; }
+  .assignment-item { flex-direction: column; align-items: flex-start; }
 }
 </style>

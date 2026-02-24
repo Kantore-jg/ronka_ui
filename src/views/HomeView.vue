@@ -1,9 +1,11 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useDataStore } from '@/stores/data'
+import { useAuthStore } from '@/stores/auth'
 import { galleryApi } from '@/api/client'
 
 const dataStore = useDataStore()
+const authStore = useAuthStore()
 const currentIndex = ref(0)
 let intervalId = null
 const apiItems = ref([])
@@ -51,9 +53,15 @@ onUnmounted(() => {
         <p class="hero-tagline"> jeunes au service de vos moments inoubliables</p>
         <p class="hero-desc">Cérémonies, événements, fêtes — nous fournissons serveurs et organisation pour faire de chaque occasion un succès.</p>
         <div class="hero-actions">
-          <router-link to="/booking" class="btn btn-primary">Réserver un événement</router-link>
-          <router-link to="/donate" class="btn btn-secondary">Faire un don</router-link>
-          <router-link to="/partenaires" class="btn btn-outline">Devenir partenaire</router-link>
+          <template v-if="authStore.isAuthenticated">
+            <router-link to="/booking" class="btn btn-primary">Réserver un événement</router-link>
+            <router-link to="/donate" class="btn btn-secondary">Faire un don</router-link>
+            <router-link to="/partenaires" class="btn btn-outline">Devenir partenaire</router-link>
+          </template>
+          <template v-else>
+            <router-link to="/auth/login" class="btn btn-primary">Se connecter</router-link>
+            <router-link to="/auth/register" class="btn btn-outline">S'inscrire</router-link>
+          </template>
         </div>
       </div>
       <div class="hero-decoration"></div>
@@ -135,8 +143,13 @@ onUnmounted(() => {
       <div class="container">
         <h2>Prêt à organiser votre événement !!</h2>
         <div class="cta-buttons">
-          <router-link to="/booking" class="btn btn-primary">Réserver</router-link>
-          <router-link to="/auth/login" class="btn btn-outline">Se connecter</router-link>
+          <template v-if="authStore.isAuthenticated">
+            <router-link to="/booking" class="btn btn-primary">Réserver</router-link>
+          </template>
+          <template v-else>
+            <router-link to="/auth/login" class="btn btn-primary">Se connecter</router-link>
+            <router-link to="/auth/register" class="btn btn-outline">S'inscrire</router-link>
+          </template>
         </div>
       </div>
     </section>

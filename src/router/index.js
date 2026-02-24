@@ -13,9 +13,9 @@ const router = createRouter({
       children: [
         { path: '', name: 'home', component: () => import('@/views/HomeView.vue'), meta: { title: 'Accueil' } },
         { path: 'services', name: 'services', component: () => import('@/views/ServicesView.vue'), meta: { title: 'Nos Services' } },
-        { path: 'booking', name: 'booking', component: () => import('@/views/BookingView.vue'), meta: { title: 'Réserver' } },
-        { path: 'donate', name: 'donate', component: () => import('@/views/DonateView.vue'), meta: { title: 'Faire un Don' } },
-        { path: 'partenaires', name: 'partenaires', component: () => import('@/views/PartnersView.vue'), meta: { title: 'Partenaires' } },
+        { path: 'booking', name: 'booking', component: () => import('@/views/BookingView.vue'), meta: { title: 'Réserver', requiresAuth: true } },
+        { path: 'donate', name: 'donate', component: () => import('@/views/DonateView.vue'), meta: { title: 'Faire un Don', requiresAuth: true } },
+        { path: 'partenaires', name: 'partenaires', component: () => import('@/views/PartnersView.vue'), meta: { title: 'Partenaires', requiresAuth: true } },
         { path: 'galerie', name: 'galerie', component: () => import('@/views/GalleryView.vue'), meta: { title: 'Galerie' } },
       ]
     },
@@ -45,6 +45,8 @@ const router = createRouter({
       meta: { requiresAuth: true, role: 'member' },
       children: [
         { path: '', name: 'member-dashboard', component: () => import('@/views/member/MemberDashboard.vue'), meta: { title: 'Mon espace' } },
+        { path: 'assignments/:id/confirm', name: 'assignment-confirm', component: () => import('@/views/member/AssignmentConfirm.vue'), meta: { title: 'Confirmer ma présence' } },
+        { path: 'assignments/:id/decline', name: 'assignment-decline', component: () => import('@/views/member/AssignmentConfirm.vue'), meta: { title: 'Décliner l\'assignation' } },
       ]
     },
     {

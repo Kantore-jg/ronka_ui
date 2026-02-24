@@ -8,14 +8,21 @@ const authStore = useAuthStore()
 const themeStore = useThemeStore()
 const mobileMenuOpen = ref(false)
 
-const navLinks = computed(() => [
-  { name: 'Accueil', to: '/' },
-  { name: 'Services', to: '/services' },
-  { name: 'Galerie', to: '/galerie' },
-  { name: 'Réserver', to: '/booking' },
-  { name: 'Don', to: '/donate' },
-  { name: 'Partenaires', to: '/partenaires' },
-])
+const navLinks = computed(() => {
+  const links = [
+    { name: 'Accueil', to: '/' },
+    { name: 'Services', to: '/services' },
+    { name: 'Galerie', to: '/galerie' },
+  ]
+  if (authStore.isAuthenticated) {
+    links.push(
+      { name: 'Réserver', to: '/booking' },
+      { name: 'Don', to: '/donate' },
+      { name: 'Partenaires', to: '/partenaires' },
+    )
+  }
+  return links
+})
 
 function getDashboardLink() {
   if (authStore.isAdmin) return { name: 'admin-dashboard', text: 'Admin' }
